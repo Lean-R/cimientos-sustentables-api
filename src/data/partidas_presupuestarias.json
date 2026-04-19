@@ -1,0 +1,17 @@
+[
+  {
+    "id": "d627af5a-5721-4efc-b014-052194e598e5",
+    "obra_id": "1",
+    "rubro": "mano_de_obra",
+    "items": [
+      {
+        "cantidad": 20,
+        "unidad_medida": "horas",
+        "detalle": "Albañil",
+        "precio_unitario": 2500,
+        "precio_parcial": 50000
+      }
+    ],
+    "precio_total": 50000
+  }
+]

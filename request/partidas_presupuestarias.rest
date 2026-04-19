@@ -1,0 +1,73 @@
+### Obtener todas las partidas presupuestarias
+GET http://localhost:3001/api/partidas
+
+###
+
+### Obtener partidas por obra_id
+GET http://localhost:3001/api/partidas?obra_id=1
+
+###
+
+### Obtener partidas por rubro
+GET http://localhost:3001/api/partidas?rubro=materiales
+
+###
+
+### Obtener partidas por obra_id y rubro
+GET http://localhost:3001/api/partidas?obra_id=1&rubro=materiales
+
+###
+
+### Obtener partida por ID
+GET http://localhost:3001/api/partidas/7bfc1664-e559-4aa1-a3a5-2740ebab457a
+
+###
+
+### Crear nueva partida presupuestaria
+POST http://localhost:3001/api/partidas
+Content-Type: application/json
+
+{
+  "obra_id": "1",
+  "rubro": "materiales",
+  "items": [
+    {
+      "cantidad": 100,
+      "unidad_medida": "kg",
+      "detalle": "Cemento Portland",
+      "precio_unitario": 550
+    },
+    {
+      "cantidad": 500,
+      "unidad_medida": "unidades",
+      "detalle": "Ladrillos comunes",
+      "precio_unitario": 310
+    }
+  ]
+}
+
+###
+
+### Actualizar partida presupuestaria
+PUT http://localhost:3001/api/partidas/d627af5a-5721-4efc-b014-052194e598e5
+Content-Type: application/json
+
+{
+  "obra_id": "1",
+  "rubro": "mano_de_obra",
+  "items": [
+    {
+      "cantidad": 20,
+      "unidad_medida": "horas",
+      "detalle": "Albañil",
+      "precio_unitario": 2500
+    }
+  ]
+}
+
+###
+
+### Eliminar partida presupuestaria
+DELETE http://localhost:3001/api/partidas/7bfc1664-e559-4aa1-a3a5-2740ebab457a
+
+###
