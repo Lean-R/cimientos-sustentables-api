@@ -1,1 +1,32 @@
-[]
+[
+   {
+      "id": 2,
+      "nombre": "Casa Lean",
+      "direccion": "Calle Falsa 333",
+      "provincia": "Buenos Aires",
+      "director": "Leandro Rocha ",
+      "tipo_contratacion": "licitacion",
+      "estado": "planificacion",
+      "presupuestoTotal": 1500000
+   },
+   {
+      "id": 3,
+      "nombre": "Casa Naty",
+      "direccion": "Av corrientes 1242",
+      "provincia": "Neuquen",
+      "director": "Natalia Burnazzi ",
+      "tipo_contratacion": "licitacion",
+      "estado": "planificacion",
+      "presupuestoTotal": 200000
+   },
+   {
+      "id": 4,
+      "nombre": "Casa Lu",
+      "direccion": "Av independencia 1543",
+      "provincia": "Mendoza",
+      "director": "Luciana Quilcate ",
+      "tipo_contratacion": "licitacion",
+      "estado": "Completada",
+      "presupuestoTotal": 500000
+   }
+]
