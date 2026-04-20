@@ -2,10 +2,10 @@ const { leerObras, guardarObras } = require("../models/obra.model");
 
 
 /**
- *
+ * @param {Object} req
  * @param {Object} res
  */
-const obtenerObras = (res) => {
+const obtenerObras = (req,res) => {
   try {
     const obras = leerObras();
     res.json(obras);
@@ -33,6 +33,9 @@ const crearObra = (req, res) => {
       estado,
       presupuestoTotal,
     } = req.body; // pasa los datos necesarios para crear la obra
+       if (!nombre || !direccion || !provincia || !director || !tipo_contratacion || !estado || !presupuestoTotal) { //VALIDACION DE QUE TODOS LOS CAMPOS ESTAN COMPLETOS
+      return res.status(400).json({ message: "Se necesita completar todos los campos para crear una obra" });
+    }
     const obras = leerObras();
     const nuevaObra = {
       id: obras.length > 0 ? obras[obras.length - 1].id + 1 : 1, // TERNARIO si HAY obras, agarra la ULTIMA obra y le suma 1 al ID, si esta VACIA le otorga la ID 1
