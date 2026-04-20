@@ -1,0 +1,109 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Detalle de obra
+
+  body
+    h1 Detalle de obra
+
+    h2 Datos generales
+
+    p
+      strong Nombre:
+      |  #{obra.nombre}
+
+    p
+      strong Dirección:
+      |  #{obra.direccion}
+
+    p
+      strong Provincia:
+      |  #{obra.provincia}
+
+    p
+      strong Director de obra:
+      |  #{obra.directorObra}
+
+    p
+      strong Teléfono de contacto:
+      |  #{obra.telefono}
+
+    p
+      strong Tipo de contratación:
+      |  #{obra.tipoContratacion}
+
+    p
+      strong Estado:
+      |  #{obra.estado}
+
+    p
+      strong Presupuesto total:
+      |  #{obra.presupuesto}
+
+    p
+    a(href=`/partidas/nueva?obraId=${obra.id}`) + Nueva partida
+
+    p
+    a(href=`/gastos/nuevo?obraId=${obra.id}`) + Nuevo gasto
+    
+    hr
+
+    h2 Partidas presupuestarias
+
+    each partida in partidas
+      h3= partida.rubro
+
+      table(border="1")
+        thead
+          tr
+            th Cantidad
+            th Unidad de medida
+            th Detalle
+            th Precio unitario
+            th Precio parcial
+        tbody
+          each item in partida.items
+            tr
+              td= item.cantidad
+              td= item.unidadMedida
+              td= item.detalle
+              td= item.precioUnitario
+              td= item.precioParcial
+
+        p
+          strong Precio total de la partida:
+          |   #{partida.precioTotal}
+
+        p
+          strong Total general de partidas:
+          |  $#{totalPartidas}
+
+    hr
+
+    h2 Gastos registrados
+
+    table(border="1")
+      thead
+        tr
+          th Fecha
+          th Partida
+          th Monto
+          th Estado
+      tbody
+        each gasto in gastos
+          tr
+            td= gasto.fecha
+            td= gasto.partidaRubro
+            td= gasto.monto
+            td= gasto.estado
+        
+    p
+      strong Total gastos registrados:
+      |  $#{totalGastos}
+
+    hr
+
+    p
+      a(href="/obras") Volver al listado
