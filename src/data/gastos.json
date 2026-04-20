@@ -1,0 +1,38 @@
+[
+  {
+    "id": "7bfc1664-e559-4aa1-a3a5-2740ebab457a",
+    "obra_id": "1",
+    "partida_id": "100",
+    "fecha": "2026-04-19T01:01:22.075Z",
+    "concepto": "Compra de cemento",
+    "monto": 55000,
+    "estado": "autorizado"
+  },
+  {
+    "id": "58294763-a75f-4a1d-b4a8-8db48be90b4a",
+    "obra_id": "1",
+    "partida_id": "101",
+    "fecha": "2026-04-19T01:01:53.240Z",
+    "concepto": "Compra de ladrillos",
+    "monto": 155000,
+    "estado": "autorizado"
+  },
+  {
+    "id": "60160f8b-5199-4f07-a115-cf63965ecac5",
+    "obra_id": "1",
+    "partida_id": "102",
+    "fecha": "2026-04-19T01:30:20.530Z",
+    "concepto": "Compra de arena",
+    "monto": 100000,
+    "estado": "autorizado"
+  },
+  {
+    "id": "9a649947-7f82-463b-b0a1-99e419185fdf",
+    "obra_id": "1",
+    "partida_id": "102",
+    "fecha": "2026-04-19T19:58:19.885Z",
+    "concepto": "Compra correspondiente a partida",
+    "monto": 100000,
+    "estado": "autorizado"
+  }
+]
