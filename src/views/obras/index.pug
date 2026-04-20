@@ -1,0 +1,44 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Obras registradas
+
+  body
+    h1 Obras registradas
+    p Estas son las obras cargadas en el sistema.
+
+    a(href="/obras/nueva") + Nueva obra
+
+    table(border="1")
+      
+      thead
+        
+         tr
+            th Nombre
+            th Dirección
+            th Provincia
+            th Director de obra
+            th Tipo de contratación
+            th Estado
+            th Presupuesto
+            th Acciones
+        
+      tbody
+        each obra in obras
+          tr
+            td= obra.nombre
+            td= obra.direccion
+            td= obra.provincia
+            td= obra.directorObra
+            td= obra.tipoContratacion
+            td= obra.estado
+            td= obra.presupuesto
+            td
+             a(href=`/obras/${obra.id}`) Ver
+             |  | 
+             a(href=`/obras/editar/${obra.id}`) Editar
+             |  | Eliminar
+        
+        

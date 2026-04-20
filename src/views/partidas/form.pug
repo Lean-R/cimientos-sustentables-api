@@ -1,0 +1,80 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Nueva partida presupuestaria
+
+  body
+    h1 Nueva partida presupuestaria
+    p Completá los datos para registrar una nueva partida.
+
+    form(action="/partidas" method="POST")
+      div
+        label(for="obraId") Obra:
+        select(id="obraId" name="obraId")
+          option(value="") Seleccionar
+          option(value="1") Casa en Castelar
+          option(value="2") Complejo residencial en Chacras de Coria
+          option(value="3") Casa de montaña en San Martín de los Andes
+
+      br
+
+      div
+        label(for="rubro") Rubro:
+        select(id="rubro" name="rubro")
+          option(value="") Seleccionar
+          option(value="Trabajos preliminares y gestión verde") Trabajos preliminares y gestión verde
+          option(value="Infraestructura y fundaciones") Infraestructura y fundaciones
+          option(value="Envolvente sustentable") Envolvente sustentable
+          option(value="Aberturas de alta prestación") Aberturas de alta prestación
+          option(value="Instalaciones bio-eficientes") Instalaciones bio-eficientes
+          option(value="Revestimientos y terminaciones") Revestimientos y terminaciones
+          option(value="Limpieza y entrega") Limpieza y entrega
+
+      br
+
+      div
+        label(for="cantidad") Cantidad:
+        input(type="number" id="cantidad" name="cantidad")
+
+      br
+
+      div
+        label(for="unidadMedida") Unidad de medida:
+        input(type="text" id="unidadMedida" name="unidadMedida")
+
+      br
+
+      div
+        label(for="detalle") Detalle:
+        input(type="text" id="detalle" name="detalle")
+
+      br
+
+      div
+        label(for="precioUnitario") Precio unitario:
+        input(type="number" id="precioUnitario" name="precioUnitario")
+
+      br
+
+      div
+        label(for="precioParcial") Precio parcial:
+        input(type="number" id="precioParcial" name="precioParcial")
+
+      br
+
+      div
+        label(for="precioTotal") Precio total:
+        input(type="number" id="precioTotal" name="precioTotal")
+
+      br
+
+      button(type="submit") Guardar partida
+
+      br
+      br
+      if obraId
+       a(href=`/obras/${obraId}`) Volver al detalle de la obra
+      else
+       a(href="/obras") Volver al listado de obras
