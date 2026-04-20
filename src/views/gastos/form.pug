@@ -1,0 +1,63 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Nuevo gasto
+
+  body
+    h1 Nuevo gasto
+    p Completá los datos para registrar un gasto.
+
+    form(action="/gastos" method="POST")
+      div
+        label(for="obraId") Obra:
+        select(id="obraId" name="obraId")
+          option(value="") Seleccionar
+          option(value="1") Casa en Castelar
+          option(value="2") Complejo residencial en Chacras de Coria
+          option(value="3") Casa de montaña en San Martín de los Andes
+
+      br
+
+      div
+        label(for="partidaId") Partida:
+        select(id="partidaId" name="partidaId")
+          option(value="") Seleccionar
+          option(value="1") Trabajos preliminares y gestión verde
+          option(value="2") Infraestructura y fundaciones
+          option(value="3") Envolvente sustentable
+          option(value="4") Aberturas de alta prestación
+
+      br
+
+      div
+        label(for="fecha") Fecha:
+        input(type="date" id="fecha" name="fecha")
+
+      br
+
+      div
+        label(for="monto") Monto:
+        input(type="number" id="monto" name="monto")
+
+      br
+
+      div
+        label(for="estado") Estado:
+        select(id="estado" name="estado")
+          option(value="") Seleccionar
+          option(value="Solicitado") Solicitado
+          option(value="Autorizado") Autorizado
+          option(value="Pagado") Pagado
+
+      br
+
+      button(type="submit") Guardar gasto
+
+      br
+      br
+      if obraId
+        a(href=`/obras/${obraId}`) Volver al detalle de la obra
+      else
+        a(href="/obras") Volver al listado de obras

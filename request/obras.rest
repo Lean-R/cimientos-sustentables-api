@@ -1,0 +1,15 @@
+### Variables globales
+@api = http://localhost:3001/api
+
+### Obtener todas las obras
+GET {{api}}/obras
+
+### Registrar nueva obra de construcción
+POST {{api}}/obras
+Content-Type: application/json
+
+{
+    "nombre": "Edificio Alvear",
+    "ubicacion": "Av. Corrientes 123",
+    "presupuesto": 50000000
+}
