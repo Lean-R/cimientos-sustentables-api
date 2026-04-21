@@ -9,6 +9,8 @@ const app = express();
 
 // Middleware para parsear JSON
 app.use(express.json());
+// Middleware para parsear datos de formularios
+app.use(express.urlencoded({ extended: true }));
 
 // Configurar plantillas PUG
 app.set("view engine", "pug");
