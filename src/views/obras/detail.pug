@@ -24,7 +24,7 @@ html
 
     p
       strong Director de obra:
-      |  #{obra.directorObra}
+      |  #{obra.director}
 
     p
       strong Teléfono de contacto:
@@ -32,7 +32,7 @@ html
 
     p
       strong Tipo de contratación:
-      |  #{obra.tipoContratacion}
+      |  #{obra.tipo_contratacion}
 
     p
       strong Estado:
@@ -40,7 +40,7 @@ html
 
     p
       strong Presupuesto total:
-      |  #{obra.presupuesto}
+      |  #{obra.presupuestoTotal}
 
     p
     a(href=`/partidas/nueva?obraId=${obra.id}`) + Nueva partida

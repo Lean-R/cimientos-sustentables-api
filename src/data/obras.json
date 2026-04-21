@@ -1,32 +1,35 @@
 [
-   {
-      "id": 2,
-      "nombre": "Casa Lean",
-      "direccion": "Calle Falsa 333",
-      "provincia": "Buenos Aires",
-      "director": "Leandro Rocha ",
-      "tipo_contratacion": "licitacion",
-      "estado": "planificacion",
-      "presupuestoTotal": 1500000
-   },
-   {
-      "id": 3,
-      "nombre": "Casa Naty",
-      "direccion": "Av corrientes 1242",
-      "provincia": "Neuquen",
-      "director": "Natalia Burnazzi ",
-      "tipo_contratacion": "licitacion",
-      "estado": "planificacion",
-      "presupuestoTotal": 200000
-   },
-   {
-      "id": 4,
-      "nombre": "Casa Lu",
-      "direccion": "Av independencia 1543",
-      "provincia": "Mendoza",
-      "director": "Luciana Quilcate ",
-      "tipo_contratacion": "licitacion",
-      "estado": "Completada",
-      "presupuestoTotal": 500000
-   }
+  {
+    "id": 1,
+    "nombre": "Casa en Castelar",
+    "direccion": "Francia 3400, Castelar",
+    "provincia": "Buenos Aires",
+    "director": "Joaquín Suaya",
+    "tipo_contratacion": "inversion",
+    "estado": "Construcción",
+    "presupuestoTotal": 95000000,
+    "telefono": "11-4567-8901"
+  },
+  {
+    "id": 2,
+    "nombre": "Complejo residencial en Chacras de Coria",
+    "direccion": "Mariano Boedo y Vieytes, Chacras de Coria",
+    "provincia": "Mendoza",
+    "director": "María Teresa Weber",
+    "tipo_contratacion": "privada",
+    "estado": "Planificación",
+    "presupuestoTotal": 180000000,
+    "telefono": "261-555-1234"
+  },
+  {
+    "id": 3,
+    "nombre": "Casa de montaña en San Martín de los Andes",
+    "direccion": "Ruta Nacional 40 km 2226 S/N, San Martín de los Andes",
+    "provincia": "Neuquén",
+    "director": "Justiniano Russo",
+    "tipo_contratacion": "licitacion",
+    "estado": "Construcción",
+    "presupuestoTotal": 120000000,
+    "telefono": "294-555-9876"
+  }
 ]

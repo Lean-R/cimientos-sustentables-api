@@ -1,41 +1,5 @@
 const { Router } = require("express");
-
-// Datos de ejemplo. Serán eliminados al conectar con la API real
-const obras = [
-  {
-    id: 1,
-    nombre: "Casa en Castelar",
-    direccion: "Francia 3400, Castelar",
-    provincia: "Buenos Aires",
-    directorObra: "Joaquín Suaya",
-    tipoContratacion: "Inversión",
-    estado: "Construcción",
-    presupuesto: "$95.000.000",
-    telefono: "11-4567-8901",
-  },
-  {
-    id: 2,
-    nombre: "Complejo residencial en Chacras de Coria",
-    direccion: "Mariano Boedo y Vieytes, Chacras de Coria",
-    provincia: "Mendoza",
-    directorObra: "María Teresa Weber",
-    tipoContratacion: "Privada",
-    estado: "Planificación",
-    presupuesto: "$180.000.000",
-    telefono: "261-555-1234",
-  },
-  {
-    id: 3,
-    nombre: "Casa de montaña en San Martín de los Andes",
-    direccion: "Ruta Nacional 40 km 2226 S/N, San Martín de los Andes",
-    provincia: "Neuquén",
-    directorObra: "Justiniano Russo",
-    tipoContratacion: "Licitación",
-    estado: "Construcción",
-    presupuesto: "$120.000.000",
-    telefono: "294-555-9876",
-  },
-];
+const { getAllObras, getObraByID, createObra, updateObra, deleteObra } = require("../services/obras-service");
 
 const partidas = [
   {
@@ -159,6 +123,7 @@ router.get("/", (req, res) => {
 
 // ---------- Rutas para OBRAS ----------
 router.get("/obras", (req, res) => {
+  const obras = getAllObras();
   res.render("obras/index", { obras });
 });
 
@@ -167,15 +132,39 @@ router.get("/obras/nueva", (req, res) => {
   res.render("obras/form");
 });
 
+// Guardar obra nueva
+router.post("/obras", (req, res) => {
+  if (req.body.presupuestoTotal) {
+    req.body.presupuestoTotal = Number(req.body.presupuestoTotal);
+  }
+  createObra(req.body);
+  res.redirect("/obras");
+});
+
 // Editar obra
 router.get("/obras/editar/:id", (req, res) => {
-  const obra = obras.find((o) => o.id === Number(req.params.id));
+  const obra = getObraByID(req.params.id);
   res.render("obras/form", { obra });
+});
+
+// Guardar obra editada
+router.post("/obras/editar/:id", (req, res) => {
+  if (req.body.presupuestoTotal) {
+    req.body.presupuestoTotal = Number(req.body.presupuestoTotal);
+  }
+  updateObra(req.params.id, req.body);
+  res.redirect("/obras");
+});
+
+// Eliminar obra
+router.get("/obras/eliminar/:id", (req, res) => {
+  deleteObra(req.params.id);
+  res.redirect("/obras");
 });
 
 // Detalle de obra
 router.get("/obras/:id", (req, res) => {
-  const obra = obras.find((o) => o.id === Number(req.params.id));
+  const obra = getObraByID(req.params.id);
   const partidasDeLaObra = partidas.filter((p) => p.obraId === obra.id);
   const gastosDeLaObra = gastos
     .filter((g) => g.obraId === obra.id)

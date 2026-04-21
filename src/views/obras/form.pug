@@ -9,7 +9,7 @@ html
     h1= obra ? "Editar obra" : "Nueva obra"
     p= obra ? "Modificá los datos de la obra seleccionada." : "Completá los datos para registrar una nueva obra."
 
-    form(action="/obras" method="POST")
+    form(action=obra ? `/obras/editar/${obra.id}` : "/obras" method="POST")
       div
         label(for="nombre") Nombre:
         input(type="text" id="nombre" name="nombre" value=obra ? obra.nombre : "")
@@ -29,18 +29,18 @@ html
       br
 
       div
-        label(for="directorObra") Director de obra:
-        input(type="text" id="directorObra" name="directorObra" value=obra ? obra.directorObra : "")
+        label(for="director") Director de obra:
+        input(type="text" id="director" name="director" value=obra ? obra.director : "")
 
       br
 
       div
-        label(for="tipoContratacion") Tipo de contratación:
-        select(id="tipoContratacion" name="tipoContratacion")
+        label(for="tipo_contratacion") Tipo de contratación:
+        select(id="tipo_contratacion" name="tipo_contratacion")
           option(value="") Seleccionar
-          option(value="Licitación" selected=obra && obra.tipoContratacion === "Licitación") Licitación
-          option(value="Privada" selected=obra && obra.tipoContratacion === "Privada") Privada
-          option(value="Inversión" selected=obra && obra.tipoContratacion === "Inversión") Inversión
+          option(value="licitacion" selected=obra && obra.tipo_contratacion === "licitacion") Licitación
+          option(value="privada" selected=obra && obra.tipo_contratacion === "privada") Privada
+          option(value="inversion" selected=obra && obra.tipo_contratacion === "inversion") Inversión
 
       br
 
@@ -56,8 +56,8 @@ html
       br
 
       div
-        label(for="presupuesto") Presupuesto total:
-        input(type="text" id="presupuesto" name="presupuesto" value=obra ? obra.presupuesto : "")
+        label(for="presupuestoTotal") Presupuesto total:
+        input(type="text" id="presupuestoTotal" name="presupuestoTotal" value=obra ? obra.presupuestoTotal : "")
 
       br
 

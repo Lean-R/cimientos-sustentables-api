@@ -31,14 +31,15 @@ html
             td= obra.nombre
             td= obra.direccion
             td= obra.provincia
-            td= obra.directorObra
-            td= obra.tipoContratacion
+            td= obra.director
+            td= obra.tipo_contratacion
             td= obra.estado
-            td= obra.presupuesto
+            td= obra.presupuestoTotal
             td
              a(href=`/obras/${obra.id}`) Ver
              |  | 
              a(href=`/obras/editar/${obra.id}`) Editar
-             |  | Eliminar
+             |  | 
+             a(href=`/obras/eliminar/${obra.id}`) Eliminar
         
         
