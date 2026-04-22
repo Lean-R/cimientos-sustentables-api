@@ -3,78 +3,239 @@ html
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Nueva partida presupuestaria
+    title Partida presupuestaria
 
   body
-    h1 Nueva partida presupuestaria
-    p Completá los datos para registrar una nueva partida.
+    h1#titulo Nueva partida presupuestaria
+    p#descripcion Completá los datos para registrar una nueva partida.
 
-    form(action="/partidas" method="POST")
-      div
-        label(for="obraId") Obra:
-        select(id="obraId" name="obraId")
-          option(value="") Seleccionar
-          option(value="1") Casa en Castelar
-          option(value="2") Complejo residencial en Chacras de Coria
-          option(value="3") Casa de montaña en San Martín de los Andes
-
-      br
+    div
+      input(type="hidden" id="obraId" value=obraId)
+      input(type="hidden" id="partidaId" value=partidaId)
 
       div
         label(for="rubro") Rubro:
-        select(id="rubro" name="rubro")
+        select(id="rubro")
           option(value="") Seleccionar
-          option(value="Trabajos preliminares y gestión verde") Trabajos preliminares y gestión verde
-          option(value="Infraestructura y fundaciones") Infraestructura y fundaciones
-          option(value="Envolvente sustentable") Envolvente sustentable
-          option(value="Aberturas de alta prestación") Aberturas de alta prestación
-          option(value="Instalaciones bio-eficientes") Instalaciones bio-eficientes
-          option(value="Revestimientos y terminaciones") Revestimientos y terminaciones
-          option(value="Limpieza y entrega") Limpieza y entrega
+          option(value="materiales") Materiales
+          option(value="mano_de_obra") Mano de obra
+          option(value="electricidad") Electricidad
+          option(value="aberturas") Aberturas
+          option(value="sanitarios") Sanitarios
+          option(value="pintura") Pintura
+          option(value="herreria") Herrería
+          option(value="carpinteria") Carpintería
+          option(value="plomeria") Plomería
+          option(value="gas") Gas
+          option(value="aire_acondicionado") Aire acondicionado
+          option(value="otros") Otros
 
       br
 
-      div
-        label(for="cantidad") Cantidad:
-        input(type="number" id="cantidad" name="cantidad")
+      h3 Items de la partida
+
+      div#itemsContainer
 
       br
 
-      div
-        label(for="unidadMedida") Unidad de medida:
-        input(type="text" id="unidadMedida" name="unidadMedida")
-
-      br
-
-      div
-        label(for="detalle") Detalle:
-        input(type="text" id="detalle" name="detalle")
-
-      br
-
-      div
-        label(for="precioUnitario") Precio unitario:
-        input(type="number" id="precioUnitario" name="precioUnitario")
-
-      br
-
-      div
-        label(for="precioParcial") Precio parcial:
-        input(type="number" id="precioParcial" name="precioParcial")
-
-      br
-
-      div
-        label(for="precioTotal") Precio total:
-        input(type="number" id="precioTotal" name="precioTotal")
-
-      br
-
-      button(type="submit") Guardar partida
+      button(type="button" id="agregarItemBtn") + Agregar item
 
       br
       br
-      if obraId
-       a(href=`/obras/${obraId}`) Volver al detalle de la obra
-      else
-       a(href="/obras") Volver al listado de obras
+
+      button(type="button" id="guardarPartidaBtn") Guardar partida
+
+      br
+      br
+      a#volverLink(href="") Volver
+
+    script.
+      let itemCount = 0;
+      let modoEdicion = false;
+      const obraId = document.getElementById('obraId').value;
+      const partidaId = document.getElementById('partidaId').value;
+
+      // Detectar modo edición
+      if (partidaId) {
+        modoEdicion = true;
+        document.getElementById('titulo').textContent = 'Editar partida presupuestaria';
+        document.getElementById('descripcion').textContent = 'Actualizá los datos de la partida presupuestaria.';
+        document.getElementById('guardarPartidaBtn').textContent = 'Actualizar partida';
+        cargarPartidaParaEditar();
+      } else {
+        document.getElementById('volverLink').href = `/obras/${obraId}`;
+        document.getElementById('volverLink').textContent = 'Volver al detalle de la obra';
+      }
+
+      async function cargarPartidaParaEditar() {
+        try {
+          const response = await fetch(`/api/partidas/${partidaId}`);
+          
+          if (!response.ok) {
+            throw new Error('Error al cargar la partida');
+          }
+          
+          const partida = await response.json();
+          
+          // Prellenar rubro
+          document.getElementById('rubro').value = partida.rubro;
+          
+          // Prellenar items
+          partida.items.forEach((item, index) => {
+            itemCount++;
+            const itemHtml = `
+              <div id="item-${itemCount}" style="padding: 10px; border: 1px solid #ccc; margin-bottom: 10px;">
+                <h4>Item ${itemCount}</h4>
+                
+                <label>Detalle:</label>
+                <input type="text" class="detalle" value="${item.detalle}" placeholder="Ej: Albañil" required>
+                <br><br>
+
+                <label>Unidad de medida:</label>
+                <input type="text" class="unidad_medida" value="${item.unidad_medida}" placeholder="Ej: horas" required>
+                <br><br>
+                
+                <label>Cantidad:</label>
+                <input type="number" class="cantidad" value="${item.cantidad}" placeholder="Ej: 20" min="1" required>
+                <br><br>
+                
+                <label>Precio unitario:</label>
+                <input type="number" class="precio_unitario" value="${item.precio_unitario}" placeholder="Ej: 2500" min="0.01" step="0.01" required>
+                <br><br>
+                
+                <button type="button" onclick="eliminarItem(${itemCount})">Eliminar item</button>
+              </div>
+            `;
+            
+            document.getElementById('itemsContainer').insertAdjacentHTML('beforeend', itemHtml);
+          });
+          
+          document.getElementById('volverLink').href = `/obras/${partida.obra_id}`;
+          document.getElementById('volverLink').textContent = 'Volver al detalle de la obra';
+          
+        } catch (error) {
+          alert('Error al cargar la partida: ' + error.message);
+          console.error('Error:', error);
+        }
+      }
+
+      function agregarItem() {
+        itemCount++;
+        const itemHtml = `
+          <div id="item-${itemCount}" style="padding: 10px; border: 1px solid #ccc; margin-bottom: 10px;">
+            <h4>Item ${itemCount}</h4>
+            
+            <label>Detalle:</label>
+            <input type="text" class="detalle" placeholder="Ej: Albañil" required>
+            <br><br>
+            
+            <label>Unidad de medida:</label>
+            <input type="text" class="unidad_medida" placeholder="Ej: horas" required>
+            <br><br>
+
+            <label>Cantidad:</label>
+            <input type="number" class="cantidad" placeholder="Ej: 20" min="1" required>
+            <br><br>
+            
+            <label>Precio unitario:</label>
+            <input type="number" class="precio_unitario" placeholder="Ej: 2500" min="0.01" step="0.01" required>
+            <br><br>
+            
+            <button type="button" onclick="eliminarItem(${itemCount})">Eliminar item</button>
+          </div>
+        `;
+        
+        document.getElementById('itemsContainer').insertAdjacentHTML('beforeend', itemHtml);
+      }
+
+      function eliminarItem(id) {
+        const elemento = document.getElementById(`item-${id}`);
+        if (elemento) {
+          elemento.remove();
+        }
+      }
+
+      document.getElementById('agregarItemBtn').addEventListener('click', agregarItem);
+
+      document.getElementById('guardarPartidaBtn').addEventListener('click', async function() {
+        const rubro = document.getElementById('rubro').value;
+        
+        if (!rubro) {
+          alert('Por favor seleccioná un rubro');
+          return;
+        }
+
+        // Obtener todos los items del formulario
+        const itemsDivs = document.querySelectorAll('[id^="item-"]');
+        
+        if (itemsDivs.length === 0) {
+          alert('Es necesario agregar al menos un item');
+          return;
+        }
+
+        const items = [];
+        itemsDivs.forEach(div => {
+          const detalle = div.querySelector('.detalle').value;
+          const cantidad = parseFloat(div.querySelector('.cantidad').value);
+          const unidad_medida = div.querySelector('.unidad_medida').value;
+          const precio_unitario = parseFloat(div.querySelector('.precio_unitario').value);
+
+          if (!detalle || !cantidad || !unidad_medida || !precio_unitario) {
+            throw new Error('Todos los campos de los items son requeridos');
+          }
+
+          items.push({
+            detalle,
+            cantidad,
+            unidad_medida,
+            precio_unitario
+          });
+        });
+
+        // Armar el objeto a enviar
+        const datosPartida = {
+          obra_id: obraId,
+          rubro: rubro,
+          items: items
+        };
+
+        try {
+          let response;
+          let mensajeExito;
+          let urlRedireccion;
+
+          if (modoEdicion) {
+            // Modo edición: PUT
+            response = await fetch(`/api/partidas/${partidaId}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(datosPartida)
+            });
+            mensajeExito = '¡Partida presupuestaria actualizada correctamente!';
+          } else {
+            // Modo creación: POST
+            response = await fetch('/api/partidas', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(datosPartida)
+            });
+            mensajeExito = '¡Partida presupuestaria creada correctamente!';
+          }
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Error en la operación');
+          }
+
+          alert(mensajeExito);
+          urlRedireccion = `/obras/${obraId}`;
+          window.location.href = urlRedireccion;
+        } catch (error) {
+          alert('Error: ' + error.message);
+          console.error('Error:', error);
+        }
+      });

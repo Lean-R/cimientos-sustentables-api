@@ -1,83 +1,6 @@
 const { Router } = require("express");
 const { getAllObras, getObraByID, createObra, updateObra, deleteObra } = require("../services/obras-service");
 
-const partidas = [
-  {
-    id: 1,
-    obraId: 1,
-    rubro: "Trabajos preliminares y gestión verde",
-    items: [
-      {
-        cantidad: 1,
-        unidadMedida: "lote",
-        detalle: "Limpieza inicial del terreno y cerramiento perimetral",
-        precioUnitario: "$1.200.000",
-        precioParcial: "$1.200.000",
-      },
-      {
-        cantidad: 1,
-        unidadMedida: "servicio",
-        detalle: "Gestión ambiental y planificación de obra sustentable",
-        precioUnitario: "$850.000",
-        precioParcial: "$850.000",
-      },
-    ],
-    precioTotal: "$2.050.000",
-  },
-  {
-    id: 2,
-    obraId: 1,
-    rubro: "Infraestructura y fundaciones",
-    items: [
-      {
-        cantidad: 30,
-        unidadMedida: "m3",
-        detalle: "Hormigón elaborado H21",
-        precioUnitario: "$95.000",
-        precioParcial: "$2.850.000",
-      },
-      {
-        cantidad: 500,
-        unidadMedida: "unidades",
-        detalle: "Ladrillos cerámicos",
-        precioUnitario: "$2.000",
-        precioParcial: "$1.000.000",
-      },
-    ],
-    precioTotal: "$3.850.000",
-  },
-  {
-    id: 3,
-    obraId: 2,
-    rubro: "Envolvente sustentable",
-    items: [
-      {
-        cantidad: 1,
-        unidadMedida: "sistema",
-        detalle: "Aislación térmica exterior y revestimiento eficiente",
-        precioUnitario: "$6.500.000",
-        precioParcial: "$6.500.000",
-      },
-    ],
-    precioTotal: "$6.500.000",
-  },
-  {
-    id: 4,
-    obraId: 3,
-    rubro: "Aberturas de alta prestación",
-    items: [
-      {
-        cantidad: 12,
-        unidadMedida: "unidades",
-        detalle: "Ventanas de aluminio con DVH",
-        precioUnitario: "$450.000",
-        precioParcial: "$5.400.000",
-      },
-    ],
-    precioTotal: "$5.400.000",
-  },
-];
-
 const gastos = [
   {
     id: 1,
@@ -198,10 +121,10 @@ router.get("/obras/:id", (req, res) => {
 
   res.render("obras/detail", {
     obra,
-    partidas: partidasDeLaObra,
-    gastos: gastosDeLaObra,
-    totalPartidas,
-    totalGastos,
+    partidas: [],
+    gastos: [],
+    totalPartidas: 0,
+    totalGastos: 0,
   });
 });
 
@@ -210,7 +133,14 @@ router.get("/obras/:id", (req, res) => {
 // Crear partida
 router.get("/partidas/nueva", (req, res) => {
   const obraId = req.query.obraId;
-  res.render("partidas/form", { obraId });
+  res.render("partidas/form", { obraId, partidaId: null });
+});
+
+// Editar partida
+router.get("/partidas/editar", (req, res) => {
+  const obraId = req.query.obraId;
+  const partidaId = req.query.partidaId;
+  res.render("partidas/form", { obraId, partidaId });
 });
 
 // ---------- Rutas para GASTOS ----------
