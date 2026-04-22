@@ -34,5 +34,297 @@
     "concepto": "Compra correspondiente a partida",
     "monto": 100000,
     "estado": "autorizado"
+  },
+  {
+    "id": "78bbfccb-c5ac-4208-a597-da903857d49c",
+    "obra_id": "2",
+    "partida_id": "2",
+    "fecha": "2026-04-10",
+    "concepto": "Compra  items de partida ",
+    "monto": 300000,
+    "estado": "Autorizado"
+  },
+  {
+    "id": "be4eda7c-f10c-4f3e-b7cf-a93ef806709e",
+    "obra_id": "2",
+    "partida_id": "2",
+    "fecha": "2026-04-10",
+    "concepto": "Compra  items de partida ",
+    "monto": 300000,
+    "estado": "Autorizado"
+  },
+  {
+    "id": "6078cec3-9965-4725-bb58-b78df2c43578",
+    "obra_id": "1",
+    "partida_id": "1",
+    "fecha": "2026-05-01",
+    "concepto": "Contratación de servicios de limpieza y nivelación",
+    "monto": 120000,
+    "estado": "Autorizado"
+  },
+  {
+    "id": "0ac508ec-8aae-4a6d-8cec-0bed85b82de3",
+    "obra_id": "1",
+    "partida_id": "1",
+    "fecha": "2026-04-17",
+    "concepto": "Contratación de servicios de limpieza y nivelación",
+    "monto": 100000,
+    "estado": "Autorizado"
+  },
+  {
+    "id": "2679f89c-149a-4b38-9320-bed1a618a7c8",
+    "obra_id": "1",
+    "partida_id": "2",
+    "fecha": "2026-05-09",
+    "concepto": "Contratación de servicios de limpieza y nivelación",
+    "monto": 100000,
+    "estado": "Autorizado"
+  },
+  {
+    "id": "27461fcc-7c0d-47e1-bcd3-05a6cca694c3",
+    "obra_id": "2",
+    "partida_id": "1",
+    "fecha": "2026-04-24",
+    "concepto": "Compra  items de partida ",
+    "monto": 300000,
+    "estado": "Pagado"
+  },
+  {
+    "id": "1c747c12-fa72-41df-a8b4-5c952815e141",
+    "obra_id": "3",
+    "partida_id": "1",
+    "fecha": "2026-04-24",
+    "concepto": "Compra items de partida ",
+    "monto": 500000,
+    "estado": "Pagado"
+  },
+  {
+    "id": "4924652a-a465-4ab9-94a3-7822242cdc63",
+    "obra_id": "3",
+    "partida_id": "1",
+    "fecha": "2026-04-24",
+    "concepto": "Compra items de partida ",
+    "monto": 300000,
+    "estado": "Pagado"
+  },
+  {
+    "id": "d14be56c-1994-437d-9e56-e4e4b3f90c65",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Infraestructura y fundaciones",
+    "monto": 500000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "17444df6-f571-4af8-94fc-cdc1cb1d5b56",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Instalaciones Bio-eficientes",
+    "monto": 700000,
+    "estado": "Autorizado"
+  },
+  {
+    "id": "8dc876ae-1258-468d-b0cb-be2e5299e6c7",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Envolvente sustentable",
+    "monto": 23000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "2d7f888c-03a9-45b6-8b96-4f44f87105b3",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Envolvente sustentable",
+    "monto": 23000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "8e35e197-4629-4b1e-8fdc-8519f8932e11",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Infraestructura y fundaciones",
+    "monto": 450000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "874c345e-4db8-45a3-9d24-c6b2fe873ea2",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Infraestructura y fundaciones",
+    "monto": 450000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "25ef883f-b753-4946-ae9a-a67dbedc8a67",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Trabajos preliminares y gestión verde",
+    "monto": 45000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "de237b40-49d5-41a0-a886-e8a2b158fc19",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Trabajos preliminares y gestión verde",
+    "monto": 45000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "fc836f74-157e-46df-aa62-8491c2c5fa04",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Trabajos preliminares y gestión verde",
+    "monto": 45000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "30622a65-0c2d-4cd9-b30d-b0a55481f093",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Trabajos preliminares y gestión verde",
+    "monto": 45000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "f378aa6c-37a9-4edb-9dd3-258983e16e06",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Trabajos preliminares y gestión verde",
+    "monto": 45000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "dc8b6766-0d3e-43ca-a7c4-ba1d28ca7aaf",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Infraestructura y fundaciones",
+    "monto": 45600,
+    "estado": "Pagado"
+  },
+  {
+    "id": "6f188064-ad16-4a30-843f-6b7ccfd6a2a4",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Trabajos preliminares y gestión verde",
+    "monto": 67000,
+    "estado": "Autorizado"
+  },
+  {
+    "id": "b0b6cfb5-3c2b-4193-b182-3b809be5781c",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Infraestructura y fundaciones",
+    "monto": 56000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "2250c2c0-2be4-4132-bc2a-831e50b37001",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Trabajos preliminares y gestión verde",
+    "monto": 56000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "2f82aa44-f6ca-4050-a32b-4a58198ccaee",
+    "obra_id": "3",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Infraestructura y fundaciones",
+    "monto": 43000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "851989d7-c00b-40ea-9a7d-77e56a8fa251",
+    "obra_id": "2",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Trabajos preliminares y gestión verde",
+    "monto": 20000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "4f55a51b-fafc-4464-8b18-75618dad0b3a",
+    "obra_id": "2",
+    "partida_id": "1",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Trabajos preliminares y gestión verde",
+    "monto": 19000,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "20c0488d-a63f-49b1-b123-ccab46c4f075",
+    "obra_id": "2",
+    "partida_id": "1",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Infraestructura y fundaciones",
+    "monto": 45000,
+    "estado": "solicitado"
+  },
+  {
+    "id": "71f91e48-38f5-4f06-b2c8-7a670d2f11f2",
+    "obra_id": "2",
+    "partida_id": "2",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Envolvente sustentable",
+    "monto": 234000,
+    "estado": "Autorizado"
+  },
+  {
+    "id": "459f68f8-adc0-4d55-8939-9dd1cdc6fffe",
+    "obra_id": "2",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Trabajos preliminares y gestión verde",
+    "monto": 20900,
+    "estado": "Solicitado"
+  },
+  {
+    "id": "94523e39-a433-4ea2-b1e4-3ca27a0bf7e8",
+    "obra_id": "2",
+    "partida_id": "",
+    "fecha": "2026-04-22",
+    "proveedor": "Obras hermanos SRL",
+    "concepto": "Envolvente sustentable",
+    "monto": 12000,
+    "estado": "Solicitado"
   }
 ]

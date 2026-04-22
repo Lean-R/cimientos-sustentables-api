@@ -1,10 +1,10 @@
 const validarGasto = (req, res, next) => {
-    const { obra_id, partida_id, concepto, monto } = req.body;
+    const { obra_id, concepto, monto } = req.body;
 
     // 1. Validamos que existan los campos obligatorios
-    if (!obra_id || !partida_id || !concepto || !monto) {
+    if (!obra_id || !concepto || !monto) {
         return res.status(400).json({ 
-            message: "Error de validación: obra_id, partida_id, concepto y monto son obligatorios." 
+            message: "Error de validación: obra_id, concepto y monto son obligatorios." 
         });
     }
 
@@ -15,7 +15,7 @@ const validarGasto = (req, res, next) => {
         });
     }
 
-    // 3. Si todo está OK, llamamos a next()
+    //3. Si todo está OK, llamamos a next()
     next();
 };
 

@@ -20,6 +20,7 @@ const GastosService = {
             obra_id: data.obra_id,
             partida_id: data.partida_id,
             fecha: data.fecha || new Date().toISOString(),
+            proveedor: data.proveedor || 'N/D',
             concepto: data.concepto,
             monto: parseFloat(data.monto),
             estado: data.estado || 'solicitado'
@@ -29,6 +30,8 @@ const GastosService = {
         await GastosModel.save(gastos);
         return nuevoGasto;
     },
+
+
 
     delete: async (id) => {
         const gastos = await GastosModel.findAll();

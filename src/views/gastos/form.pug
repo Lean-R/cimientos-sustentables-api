@@ -6,34 +6,38 @@ html
     title Nuevo gasto
 
   body
-    h1 Nuevo gasto
-    p Completá los datos para registrar un gasto.
+    h1#titulo Nuevo gasto
+    p#descripcion Completá los datos para registrar un gasto.
 
-    form(action="/gastos" method="POST")
-      div
-        label(for="obraId") Obra:
-        select(id="obraId" name="obraId")
-          option(value="") Seleccionar
-          option(value="1") Casa en Castelar
-          option(value="2") Complejo residencial en Chacras de Coria
-          option(value="3") Casa de montaña en San Martín de los Andes
-
-      br
-
-      div
-        label(for="partidaId") Partida:
-        select(id="partidaId" name="partidaId")
-          option(value="") Seleccionar
-          option(value="1") Trabajos preliminares y gestión verde
-          option(value="2") Infraestructura y fundaciones
-          option(value="3") Envolvente sustentable
-          option(value="4") Aberturas de alta prestación
+    form#formGasto
+      input(type="hidden" id="obra_id" name="obra_id" value=obraId)
+      input(type="hidden" id="partida_id" name="partida_id" value=partidaId)
 
       br
 
       div
         label(for="fecha") Fecha:
-        input(type="date" id="fecha" name="fecha")
+        input(type="date" id="fecha" name="fecha" value=(new Date().toISOString().split('T')[0]))
+
+      br
+
+      div
+        label(for="concepto") Rubro:
+        select(id="concepto" name="concepto")
+          option(value="") Seleccionar
+          option(value="Trabajos preliminares y gestión verde") Trabajos preliminares y gestión verde
+          option(value="Infraestructura y fundaciones") Infraestructura y fundaciones
+          option(value="Envolvente sustentable") Envolvente sustentable
+          option(value="Aberturas de alta prestación") Aberturas de alta prestación
+          option(value="Instalaciones Bio-eficientes") Instalaciones Bio-eficientes
+          option(value="Revestimientos y Terminaciones") Revestimientos y Terminaciones 
+          option(value="Limpieza y Entrega") Limpieza y Entrega
+
+      br
+
+      div
+        label(for="proveedor") Proveedor:
+        input(type="text" id="proveedor" name="proveedor")
 
       br
 
@@ -53,11 +57,14 @@ html
 
       br
 
-      button(type="submit") Guardar gasto
+      button(type="submit" id="guardarGasto") Guardar gasto
 
       br
       br
+
       if obraId
         a(href=`/obras/${obraId}`) Volver al detalle de la obra
       else
         a(href="/obras") Volver al listado de obras
+  
+  script(src="/js/gastos.js")    

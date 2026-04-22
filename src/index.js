@@ -1,6 +1,8 @@
 const express = require("express");
 const routes = require("./routes");
 const views = require("./views");
+const path = require('path');
+
 
 const PORT = process.env.PORT || 3001;
 
@@ -11,6 +13,8 @@ const app = express();
 app.use(express.json());
 // Middleware para parsear datos de formularios
 app.use(express.urlencoded({ extended: true }));
+// Funciones javascript para servir archivos estáticos (CSS, JS, imágenes):
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Configurar plantillas PUG
 app.set("view engine", "pug");

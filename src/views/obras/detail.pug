@@ -51,7 +51,7 @@ html
     a(href=`/partidas/nueva?obraId=${obra.id}`) + Nueva partida
 
     p
-    a(href=`/gastos/nuevo?obraId=${obra.id}`) + Nuevo gasto
+    a(href=`/api/gastos/nuevo?obraId=${obra.id}`) + Nuevo gasto
 
     script.
       const obraId = '#{obra.id}';
@@ -160,26 +160,27 @@ html
 
     h2 Gastos registrados
 
-    table(border="1")
-      thead
-        tr
-          th Fecha
-          th Partida
-          th Monto
-          th Estado
-      tbody
-        each gasto in gastos
-          tr
-            td= gasto.fecha
-            td= gasto.partidaRubro
-            td= gasto.monto
-            td= gasto.estado
-        
-    p
-      strong Total gastos registrados:
-      |  $#{totalGastos}
-
-    hr
+    div#gastosContainer
+      p Cargando gastos...
 
     p
-      a(href="/obras") Volver al listado
+      strong Total gastos registrados: 
+      span#totalGastos $0
+
+    hr  
+
+    p
+        a(href="/api/obras") Volver al listado
+
+
+  //script 
+  script(src="/js/detailgastos.js")
+  script. 
+    const currenteObraId = '#{obra.id}';
+      document.addEventListener('DOMContentLoaded', () => {
+          cargarGastos(currenteObraId);
+        });
+
+ 
+
+   
