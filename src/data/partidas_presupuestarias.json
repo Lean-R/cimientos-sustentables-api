@@ -1,1 +1,61 @@
-[]
+[
+  {
+    "id": "b97fffa4-c4b9-43f4-9aa2-50fa04ef976d",
+    "obra_id": "1",
+    "rubro": "electricidad",
+    "items": [
+      {
+        "detalle": "Calbles",
+        "cantidad": 20,
+        "unidad_medida": "rollos de 10 mentros",
+        "precio_unitario": 12500,
+        "precio_parcial": 250000
+      },
+      {
+        "detalle": "llaves de luz",
+        "cantidad": 20,
+        "unidad_medida": "unidades",
+        "precio_unitario": 2500,
+        "precio_parcial": 50000
+      }
+    ],
+    "precio_total": 300000
+  },
+  {
+    "id": "3fe4de1a-7c15-4b2c-834b-42d3d1406871",
+    "obra_id": "1",
+    "rubro": "aberturas",
+    "items": [
+      {
+        "detalle": "Aluminio",
+        "cantidad": 30,
+        "unidad_medida": "metros",
+        "precio_unitario": 23000,
+        "precio_parcial": 690000
+      }
+    ],
+    "precio_total": 690000
+  },
+  {
+    "id": "171c5ac6-731f-48d2-b6c2-95371fa722f2",
+    "obra_id": "2",
+    "rubro": "mano_de_obra",
+    "items": [
+      {
+        "detalle": "para limpieza",
+        "cantidad": 10,
+        "unidad_medida": "unid/hora",
+        "precio_unitario": 2500,
+        "precio_parcial": 25000
+      },
+      {
+        "detalle": "cemento",
+        "cantidad": 10,
+        "unidad_medida": "bolsas de 20 kilos",
+        "precio_unitario": 8900,
+        "precio_parcial": 89000
+      }
+    ],
+    "precio_total": 114000
+  }
+]
