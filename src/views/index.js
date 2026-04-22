@@ -1,40 +1,7 @@
 const { Router } = require("express");
 const { getAllObras, getObraByID, createObra, updateObra, deleteObra } = require("../services/obras-service");
-
-const gastos = [
-  {
-    id: 1,
-    obraId: 1,
-    partidaId: 1,
-    fecha: "10/04/2026",
-    monto: "$1.200.000",
-    estado: "Pagado",
-  },
-  {
-    id: 2,
-    obraId: 1,
-    partidaId: 2,
-    fecha: "15/04/2026",
-    monto: "$2.850.000",
-    estado: "Autorizado",
-  },
-  {
-    id: 3,
-    obraId: 2,
-    partidaId: 3,
-    fecha: "20/04/2026",
-    monto: "$6.500.000",
-    estado: "Solicitado",
-  },
-  {
-    id: 4,
-    obraId: 3,
-    partidaId: 4,
-    fecha: "22/04/2026",
-    monto: "$5.400.000",
-    estado: "Pagado",
-  },
-];
+const PartidasPresupuestariasService = require("../services/partidas_presupuestarias.service");
+const GastosService = require("../services/gastos.service");
 
 // Router creado para manejar las vistas PUG
 const router = Router();
@@ -86,46 +53,45 @@ router.get("/obras/eliminar/:id", (req, res) => {
 });
 
 // Detalle de obra
-router.get("/obras/:id", (req, res) => {
-  const obra = getObraByID(req.params.id);
-  const partidasDeLaObra = partidas.filter((p) => p.obraId === obra.id);
-  const gastosDeLaObra = gastos
-    .filter((g) => g.obraId === obra.id)
-    .map((g) => {
-      const partida = partidas.find(
-        (p) => Number(p.id) === Number(g.partidaId),
-      );
+router.get("/obras/:id", async (req, res) => {
+  try {
+    const obra = getObraByID(req.params.id);
+    
+    if (!obra) {
+      return res.status(404).send("Obra no encontrada");
+    }
 
-      return {
-        ...g,
-        partidaRubro: partida ? partida.rubro : "Sin partida",
-      };
+    const todasPartidas = await PartidasPresupuestariasService.getAll();
+    const partidasDeLaObra = todasPartidas.filter((p) => String(p.obra_id) === String(obra.id));
+
+    const todosGastos = await GastosService.getAll();
+    const gastosDeLaObra = todosGastos
+      .filter((g) => String(g.obra_id) === String(obra.id))
+      .map((g) => {
+        const partida = todasPartidas.find(
+          (p) => String(p.id) === String(g.partida_id)
+        );
+
+        return {
+          ...g,
+          partidaRubro: partida ? partida.rubro : "Sin partida",
+        };
+      });
+
+    const totalPartidas = partidasDeLaObra.reduce((acc, partida) => acc + (Number(partida.precio_total) || 0), 0);
+    const totalGastos = gastosDeLaObra.reduce((acc, gasto) => acc + (Number(gasto.monto) || 0), 0);
+
+    res.render("obras/detail", {
+      obra,
+      partidas: partidasDeLaObra,
+      gastos: gastosDeLaObra,
+      totalPartidas,
+      totalGastos,
     });
-
-  const totalPartidas = partidasDeLaObra.reduce((acc, partida) => {
-    const valor = Number(
-      partida.precioTotal
-        .replace(/\$/g, "")
-        .replace(/\./g, "")
-        .replace(",", "."),
-    );
-    return acc + valor;
-  }, 0);
-
-  const totalGastos = gastosDeLaObra.reduce((acc, gasto) => {
-    const valor = Number(
-      gasto.monto.replace(/\$/g, "").replace(/\./g, "").replace(",", "."),
-    );
-    return acc + valor;
-  }, 0);
-
-  res.render("obras/detail", {
-    obra,
-    partidas: [],
-    gastos: [],
-    totalPartidas: 0,
-    totalGastos: 0,
-  });
+  } catch (error) {
+    console.error("Error al obtener detalles de la obra:", error);
+    res.status(500).send("Error interno del servidor");
+  }
 });
 
 // ---------- Rutas para PARTIDAS ----------
