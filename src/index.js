@@ -3,15 +3,33 @@ import routes from "./routes/index.js";
 import views from "./views/index.js";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import mongoose from "mongoose";
 
 // Configurar __dirname para ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const PORT = process.env.PORT || 3001;
+const MONGO_URI = process.env.MONGO_URI;
 
 // Inicializar express
 const app = express();
+
+// Si MONGO_URI no está definido, detener el servidor
+if (!MONGO_URI) {
+  console.error(
+    "MONGO_URI no definido. Verifique las variables de entorno (.env)",
+  );
+  process.exit(1);
+}
+
+try {
+  await mongoose.connect(MONGO_URI);
+  console.log("✅️ DB conectada exitosamente");
+} catch (error) {
+  console.error("❌ Error conectando a la DB:", error.message);
+  process.exit(1);
+}
 
 // Middleware para parsear JSON
 app.use(express.json());
