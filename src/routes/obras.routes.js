@@ -1,5 +1,7 @@
-const { Router } = require("express");
-const { obtenerObras, crearObra, getObraID, borrarObra, actualizarObra } = require("../controllers/obras.controller");
+import { Router } from "express";
+import ObrasController from "../controllers/obras.controller.js";
+const { obtenerObras, crearObra, getObraID, borrarObra, actualizarObra } =
+  ObrasController;
 
 const router = Router();
 
@@ -9,6 +11,4 @@ router.get("/:id", getObraID);
 router.put("/:id", actualizarObra);
 router.delete("/:id", borrarObra);
 
-
-
-module.exports = router;
+export default router;

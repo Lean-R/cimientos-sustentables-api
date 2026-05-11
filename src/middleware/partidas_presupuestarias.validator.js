@@ -1,5 +1,5 @@
 // Rubros válidos para partidas presupuestarias
-const RUBROS_VALIDOS = [
+export const RUBROS_VALIDOS = [
   "materiales",
   "mano_de_obra",
   "electricidad",
@@ -14,7 +14,7 @@ const RUBROS_VALIDOS = [
   "otros",
 ];
 
-const validarPartidaPresupuestaria = async (req, res, next) => {
+export const validarPartidaPresupuestaria = async (req, res, next) => {
   const { obra_id, rubro, items } = req.body;
 
   // Validar que existan los campos obligatorios
@@ -85,5 +85,3 @@ const validarPartidaPresupuestaria = async (req, res, next) => {
   // Si todo está bien, llamar a next()
   next();
 };
-
-module.exports = { validarPartidaPresupuestaria, RUBROS_VALIDOS };

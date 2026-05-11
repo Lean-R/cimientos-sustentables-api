@@ -1,8 +1,12 @@
-const express = require("express");
-const routes = require("./routes");
-const views = require("./views");
-const path = require('path');
+import express from "express";
+import routes from "./routes/index.js";
+import views from "./views/index.js";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
+// Configurar __dirname para ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const PORT = process.env.PORT || 3001;
 
@@ -14,11 +18,11 @@ app.use(express.json());
 // Middleware para parsear datos de formularios
 app.use(express.urlencoded({ extended: true }));
 // Funciones javascript para servir archivos estáticos (CSS, JS, imágenes):
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(join(__dirname, "public")));
 
 // Configurar plantillas PUG
 app.set("view engine", "pug");
-app.set("views", "./src/views");
+app.set("views", join(__dirname, "views"));
 
 // Router para vistas PUG
 app.use("/", views);

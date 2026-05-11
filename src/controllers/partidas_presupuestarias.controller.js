@@ -1,4 +1,4 @@
-const PartidasPresupuestariasService = require("../services/partidas_presupuestarias.service.js");
+import PartidasPresupuestariasService from "../services/partidas_presupuestarias.service.js";
 
 const PartidasPresupuestariasController = {
   // GET /api/partidas (con query params opcionales: ?obra_id=1&rubro=materiales)
@@ -115,4 +115,4 @@ const PartidasPresupuestariasController = {
   },
 };
 
-module.exports = PartidasPresupuestariasController;
+export default PartidasPresupuestariasController;

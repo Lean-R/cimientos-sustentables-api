@@ -1,14 +1,14 @@
+import PartidasPresupuestariasController from "../controllers/partidas_presupuestarias.controller.js";
 const {
   getPartidas,
   getPartidaById,
   createPartida,
   updatePartida,
   deletePartida,
-} = require("../controllers/partidas_presupuestarias.controller.js");
-const {
-  validarPartidaPresupuestaria,
-} = require("../middleware/partidas_presupuestarias.validator.js");
-const { Router } = require("express");
+} = PartidasPresupuestariasController;
+import { validarPartidaPresupuestaria } from "../middleware/partidas_presupuestarias.validator.js";
+import { Router } from "express";
+
 const router = Router();
 
 // Rutas para partidas presupuestarias
@@ -27,4 +27,4 @@ router.put("/:id", validarPartidaPresupuestaria, updatePartida);
 // DELETE /api/partidas/:id - Eliminar partida
 router.delete("/:id", deletePartida);
 
-module.exports = router;
+export default router;

@@ -1,11 +1,15 @@
-const fs = require("fs"); // file sistem (para interactuar con los archivos)
-const path = require("path");
+import { readFileSync, writeFileSync } from "fs"; // file sistem (para interactuar con los archivos)
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
-const obrasDBPath = path.join(__dirname, "../data/obras.json"); //esta linea declara el path de las obras de las obras;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const obrasDBPath = join(__dirname, "../data/obras.json"); //esta linea declara el path de las obras de las obras;
 
 const leerObras = () => {
   try {
-    const obrasData = fs.readFileSync(obrasDBPath, "utf-8"); //lee obras.json
+    const obrasData = readFileSync(obrasDBPath, "utf-8"); //lee obras.json
     const obras = JSON.parse(obrasData); // Transforma el texto de obras.json a codigo de JS
     return obras;
   } catch (error) {
@@ -16,7 +20,7 @@ const leerObras = () => {
 
 const guardarObras = (nuevaObra) => {
   try {
-    fs.writeFileSync(obrasDBPath, JSON.stringify(nuevaObra, null, 3)); //Transforma a JSONString la nueva obra y lo guarda en obrasDBPath
+    writeFileSync(obrasDBPath, JSON.stringify(nuevaObra, null, 3)); //Transforma a JSONString la nueva obra y lo guarda en obrasDBPath
     console.log(`La obra se guardo correctamente`);
     return true;
   } catch (error) {
@@ -25,5 +29,4 @@ const guardarObras = (nuevaObra) => {
   }
 };
 
-
-module.exports = { leerObras, guardarObras };
+export { leerObras, guardarObras };

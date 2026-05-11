@@ -1,7 +1,10 @@
-const { Router } = require("express");
-const { getAllObras, getObraByID, createObra, updateObra, deleteObra } = require("../services/obras-service");
-const PartidasPresupuestariasService = require("../services/partidas_presupuestarias.service");
-const GastosService = require("../services/gastos.service");
+import { Router } from "express";
+import ObrasService from "../services/obras-service.js";
+import PartidasPresupuestariasService from "../services/partidas_presupuestarias.service.js";
+import GastosService from "../services/gastos.service.js";
+
+const { getAllObras, getObraByID, createObra, updateObra, deleteObra } =
+  ObrasService;
 
 // Router creado para manejar las vistas PUG
 const router = Router();
@@ -56,20 +59,22 @@ router.get("/obras/eliminar/:id", (req, res) => {
 router.get("/obras/:id", async (req, res) => {
   try {
     const obra = getObraByID(req.params.id);
-    
+
     if (!obra) {
       return res.status(404).send("Obra no encontrada");
     }
 
     const todasPartidas = await PartidasPresupuestariasService.getAll();
-    const partidasDeLaObra = todasPartidas.filter((p) => String(p.obra_id) === String(obra.id));
+    const partidasDeLaObra = todasPartidas.filter(
+      (p) => String(p.obra_id) === String(obra.id),
+    );
 
     const todosGastos = await GastosService.getAll();
     const gastosDeLaObra = todosGastos
       .filter((g) => String(g.obra_id) === String(obra.id))
       .map((g) => {
         const partida = todasPartidas.find(
-          (p) => String(p.id) === String(g.partida_id)
+          (p) => String(p.id) === String(g.partida_id),
         );
 
         return {
@@ -78,8 +83,14 @@ router.get("/obras/:id", async (req, res) => {
         };
       });
 
-    const totalPartidas = partidasDeLaObra.reduce((acc, partida) => acc + (Number(partida.precio_total) || 0), 0);
-    const totalGastos = gastosDeLaObra.reduce((acc, gasto) => acc + (Number(gasto.monto) || 0), 0);
+    const totalPartidas = partidasDeLaObra.reduce(
+      (acc, partida) => acc + (Number(partida.precio_total) || 0),
+      0,
+    );
+    const totalGastos = gastosDeLaObra.reduce(
+      (acc, gasto) => acc + (Number(gasto.monto) || 0),
+      0,
+    );
 
     res.render("obras/detail", {
       obra,
@@ -117,4 +128,4 @@ router.get("/gastos/nuevo", (req, res) => {
   res.render("gastos/form", { obraId });
 });
 
-module.exports = router;
+export default router;

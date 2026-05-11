@@ -1,8 +1,9 @@
-const { Router } = require("express");
+import { Router } from "express";
+import obrasRouter from "./obras.routes.js";
+import gastosRouter from "./gastos.routes.js";
+import partidasPresupuestariasRouter from "./partidas_presupuestarias.routes.js";
+
 const router = Router();
-const obrasRouter = require("./obras.routes");
-const gastosRouter = require("./gastos.routes");
-const partidasPresupuestariasRouter = require("./partidas_presupuestarias.routes");
 
 // Rutas para gastos
 router.use("/gastos", gastosRouter);
@@ -13,4 +14,4 @@ router.use("/obras", obrasRouter);
 // Rutas para partidas presupuestarias
 router.use("/partidas", partidasPresupuestariasRouter);
 
-module.exports = router;
+export default router;

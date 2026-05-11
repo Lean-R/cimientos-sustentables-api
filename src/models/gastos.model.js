@@ -1,24 +1,20 @@
-const fs = require('fs/promises'); // File System con soporte de Promesas (async/await).
-const path = require('path');
+import { readFile, writeFile } from "fs/promises"; // File System con soporte de Promesas (async/await).
+import { resolve } from "path";
 
-const filePath = path.resolve('src/data/gastos.json');
+const filePath = resolve("src/data/gastos.json");
 
-const GastosModel = {
-    // Leer todos los gastos
-    findAll: async () => {
-        try {
-            const data = await fs.readFile(filePath, 'utf-8');
-            return JSON.parse(data);
-        } catch (error) {
-            // Si el archivo no existe, retornamos un array vacío
-            return [];
-        }
-    },
-
-    // Guardar todos los gastos
-    save: async (gastos) => {
-        await fs.writeFile(filePath, JSON.stringify(gastos, null, 2));
-    }
+// Leer todos los gastos
+export const findAll = async () => {
+  try {
+    const data = await readFile(filePath, "utf-8");
+    return JSON.parse(data);
+  } catch (error) {
+    // Si el archivo no existe, retornamos un array vacío
+    return [];
+  }
 };
 
-module.exports = GastosModel;
+// Guardar todos los gastos
+export const save = async (gastos) => {
+  await writeFile(filePath, JSON.stringify(gastos, null, 2));
+};

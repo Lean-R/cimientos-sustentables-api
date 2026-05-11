@@ -1,10 +1,12 @@
-const { getAllObras, getObraByID, createObra, updateObra, deleteObra } = require("../services/obras-service");
+import ObrasService from "../services/obras-service.js";
+const { getAllObras, getObraByID, createObra, updateObra, deleteObra } =
+  ObrasService;
 
 /**
  * @param {Object} req
  * @param {Object} res
  */
-const obtenerObras = (req,res) => {
+const obtenerObras = (req, res) => {
   try {
     const obras = getAllObras();
     res.json(obras);
@@ -32,18 +34,27 @@ const crearObra = (req, res) => {
       estado,
       presupuestoTotal,
     } = req.body; // pasa los datos necesarios para crear la obra
-       if (!nombre || !direccion || !provincia || !director || !tipo_contratacion || !estado || !presupuestoTotal) { //VALIDACION DE QUE TODOS LOS CAMPOS ESTAN COMPLETOS
-      return res.status(400).json({ message: "Se necesita completar todos los campos para crear una obra" });
-       }
-    const nuevaObra = createObra(req.body)
+    if (
+      !nombre ||
+      !direccion ||
+      !provincia ||
+      !director ||
+      !tipo_contratacion ||
+      !estado ||
+      !presupuestoTotal
+    ) {
+      //VALIDACION DE QUE TODOS LOS CAMPOS ESTAN COMPLETOS
+      return res.status(400).json({
+        message: "Se necesita completar todos los campos para crear una obra",
+      });
+    }
+    const nuevaObra = createObra(req.body);
     res.status(201).json(nuevaObra); // si se guardo correctamente le respondemos con el status 201
   } catch (error) {
     console.log(`Ocurrio un error al crear la obra`);
     res.status(500).json({ message: `Ocurrio un error al guardar la obra` });
   }
 };
-
-
 
 /**
  *
@@ -54,7 +65,7 @@ const getObraID = (req, res) => {
   //busca y devuelve la obra
   try {
     const { id } = req.params; // Obtiene el ID
-    const  obra = getObraByID(id)
+    const obra = getObraByID(id);
     !obra
       ? res.status(404).json({ message: `Obra con ID ${id} no fue encontrada` })
       : res.status(200).json(obra); // TERNARIO NO LA ENCUENTRA DE ERROR, SI LA ENCUENTRA, LA DEVUELVE
@@ -63,8 +74,6 @@ const getObraID = (req, res) => {
     res.status(500).json({ message: `Ocurrio un error al buscar la obra` });
   }
 };
-
-
 
 /**
  *
@@ -75,19 +84,17 @@ const actualizarObra = (req, res) => {
   try {
     const { id } = req.params;
     const obra = updateObra(id, req.body);
-    if (!obra){
+    if (!obra) {
       res.status(404).json({ message: "La obra no fue encontrada" }); //devuelve un error not found
-      return
+      return;
     }
-    res.status(200).json(obra)
+    res.status(200).json(obra);
   } catch (error) {
     //error del servidor
     console.log("Ocurrio un error al buscar la obra");
     res.status(500).json({ message: `Ocurrio un error al modificar la obra` });
   }
 };
-
-
 
 /**
  *
@@ -97,10 +104,10 @@ const actualizarObra = (req, res) => {
 const borrarObra = (req, res) => {
   try {
     const { id } = req.params;
-    const obra = deleteObra(id)
-    if(!obra){
+    const obra = deleteObra(id);
+    if (!obra) {
       res.status(404).json({ message: "La obra no fue encontrada" }); //devuelve un error not found
-      return
+      return;
     }
     res
       .status(200)
@@ -111,7 +118,7 @@ const borrarObra = (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   obtenerObras,
   crearObra,
   getObraID,
