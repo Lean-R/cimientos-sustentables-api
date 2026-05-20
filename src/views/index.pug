@@ -10,8 +10,15 @@ html
                 margin: 40px auto;
                 padding: 0 20px;
             }
-            h1, h3 {
+            .header {
                 text-align: center;
+            }
+            .header .logo {
+                display: block;
+                margin: 0 auto 15px auto;
+                max-width: 100%;
+                height: auto;
+                width: 420px;
             }
             #loginForm {
                 margin: 30px 0;
@@ -38,8 +45,9 @@ html
                 cursor: pointer;
             }
     body
-        h1 Cimientos Sustentables e Hijos SA
-        h3 Sistema de Gestión de Obras
+        .header
+            img.logo(src="/logo-cimientos.png" alt="Logo Cimientos Sustentables e Hijos SA")
+            h3 Sistema de Gestión de Obras
 
         form#loginForm
             .form-row
