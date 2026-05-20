@@ -1,11 +1,76 @@
-html 
-    head 
-        meta(charset="UTF-8") 
-        meta(name="viewport" content="width=device-width, initial-scale=1.0") 
+html
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
         title Cimientos Sustentables e Hijos SA - Sistema de Gestión de Obras
-        
-    body 
+        style.
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                max-width: 480px;
+                margin: 40px auto;
+                padding: 0 20px;
+            }
+            h1, h3 {
+                text-align: center;
+            }
+            #loginForm {
+                margin: 30px 0;
+            }
+            .form-row {
+                display: flex;
+                align-items: center;
+                margin-bottom: 14px;
+            }
+            .form-row label {
+                width: 110px;
+                flex-shrink: 0;
+            }
+            .form-row input {
+                flex: 1;
+                padding: 6px 8px;
+                box-sizing: border-box;
+            }
+            .form-actions {
+                margin-top: 20px;
+            }
+            .form-actions button {
+                padding: 8px 20px;
+                cursor: pointer;
+            }
+    body
         h1 Cimientos Sustentables e Hijos SA
         h3 Sistema de Gestión de Obras
 
-        a(href="/obras") Ver obras registradas
+        form#loginForm
+            .form-row
+                label(for="username") Usuario:
+                input#username(type="text" name="username" required)
+            .form-row
+                label(for="password") Contraseña:
+                input#password(type="password" name="password" required)
+            .form-actions
+                button(type="submit") Iniciar sesión
+
+        script.
+            document.getElementById('loginForm').addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                try {
+                    const response = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+
+                    if (response.ok) {
+                        window.location.href = '/obras';
+                    } else {
+                        alert('Credenciales incorrectas');
+                    }
+                } catch (error) {
+                    alert('Credenciales incorrectas');
+                }
+            });
