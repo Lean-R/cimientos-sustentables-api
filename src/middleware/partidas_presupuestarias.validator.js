@@ -1,17 +1,12 @@
 // Rubros válidos para partidas presupuestarias
 export const RUBROS_VALIDOS = [
-  "materiales",
-  "mano_de_obra",
-  "electricidad",
-  "aberturas",
-  "sanitarios",
-  "pintura",
-  "herreria",
-  "carpinteria",
-  "plomeria",
-  "gas",
-  "aire_acondicionado",
-  "otros",
+          "trabajos_preliminares_y_gestion_verde",
+          "infraestructura_y_fundaciones",
+          "envolvente_sustentable",
+          "aberturas_de_alta_prestacion",
+          "instalaciones_bio_eficientes",
+          "revestimientos_y_terminaciones",
+          "limpieza_y_entrega",
 ];
 
 export const validarPartidaPresupuestaria = async (req, res, next) => {
