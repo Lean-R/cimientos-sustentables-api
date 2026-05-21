@@ -1,54 +1,86 @@
-import { leerObras, guardarObras } from "../models/obra.model.js";
+import Obra from "../models/obra.model.js";
+import mongoose from "mongoose";
+import { readFileSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+
+// Función para sembrado automático de datos si la colección en MongoDB está vacía
+const seedObras = async () => {
+  try {
+    const count = await Obra.countDocuments();
+    if (count === 0) {
+      console.log("ℹ️ No se encontraron obras en MongoDB. Sembrando datos iniciales...");
+      
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = dirname(__filename);
+      const jsonPath = join(__dirname, "../data/obras.json");
+      
+      const fileData = readFileSync(jsonPath, "utf8");
+      const obrasIniciales = JSON.parse(fileData);
+      
+      // Removemos el campo ID numérico secuencial del JSON antiguo para que MongoDB autogenere sus ObjectIds válidos
+      const obrasParaInsertar = obrasIniciales.map(({ id, ...resto }) => resto);
+      
+      if (obrasParaInsertar.length > 0) {
+        await Obra.insertMany(obrasParaInsertar);
+        console.log(`✅ Se insertaron ${obrasParaInsertar.length} obras iniciales exitosamente.`);
+      }
+    }
+  } catch (error) {
+    console.error("⚠️ Error durante el sembrado inicial de obras:", error.message);
+  }
+};
+
+// Ejecutar el sembrado automático una vez que la conexión esté abierta y lista
+if (mongoose.connection.readyState === 1) {
+  seedObras();
+} else {
+  mongoose.connection.once("open", () => {
+    seedObras();
+  });
+}
 
 const ObrasService = {
-  getAllObras: () => {
-    return leerObras(); //devuelve el array de obras
+  // Obtener todas las obras
+  getAllObras: async () => {
+    return await Obra.find();
   },
 
-  getObraByID: (id) => {
-    return leerObras().find((element) => element.id === parseInt(id)); // lee las obras y lo filtra por el ID pasado por el parametro
-  },
-
-  createObra: (data) => {
-    const obra = leerObras(); //lee el array de obras
-    const nuevaObra = {
-      //ternario, si el array de obras esta vacio crea la primera con el id 1
-      //si ya hay obras, le suma 1 al ID anterior para generar el id
-      id: obra.length > 0 ? obra[obra.length - 1].id + 1 : 1,
-      ...data,
-    };
-    obra.push(nuevaObra);
-    //suma al array de obras la nueva obra
-    guardarObras(obra);
-    //guarda en el archivo JSON
-    return nuevaObra;
-  },
-
-  updateObra: (id, data) => {
-    const obra = leerObras();
-    // busca y devuelve la posición (index) en el array de la obra con ese ID
-    const index = obra.findIndex((element) => element.id === parseInt(id));
-    //si no encuentra el ID, retorna x defecto -1, entonces si Index === -1 retorna un error y se corta el proceso
-    if (index === -1) {
+  // Obtener obra por ID
+  getObraByID: async (id) => {
+    // Si el ID provisto no es un ObjectId válido de MongoDB (por ejemplo, los viejos IDs numéricos),
+    // retornamos null de forma segura en lugar de causar un error de casteo de Mongoose (CastError)
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return null;
     }
-    obra[index] = { ...obra[index], ...data }; // modifica los valores de la obra que el usuario quiere modificar, si no se mando un valor queda igual
-    guardarObras(obra); //guarda en el archivo JSON
-    return obra[index];
+    return await Obra.findById(id);
   },
 
-  deleteObra: (id) => {
-    const obra = leerObras();
-    // busca y devuelve la posición (index) en el array de la obra con ese ID
-    const index = obra.findIndex((element) => element.id === parseInt(id));
-    //si no encuentra el ID, retorna x defecto -1, entonces si Index === -1 retorna un error y se corta el proceso
-    if (index === -1) {
+  // Registrar una obra
+  createObra: async (data) => {
+    const nuevaObra = new Obra(data);
+    return await nuevaObra.save();
+  },
+
+  // Actualizar una obra
+  updateObra: async (id, data) => {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return null;
     }
-    obra.splice(index, 1); // borra la obra que le pasaron en el ID
-    guardarObras(obra); //guarda en el archivo JSON
+    // Mantenemos "runValidators: true" para que valide el nuevo esquema al actualizar
+    return await Obra.findByIdAndUpdate(id, data, { 
+      new: true, 
+      runValidators: true 
+    });
+  },
 
-    return true;
+  // Borrar una obra
+  deleteObra: async (id) => {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return null;
+    }
+    const obraBorrada = await Obra.findByIdAndDelete(id);
+    return obraBorrada !== null;
   },
 };
 

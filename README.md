@@ -74,6 +74,77 @@ El servidor se ejecutará en modo `watch` (reemplaza `nodemon`), reiniciándose 
 - **routes/**: Definición de rutas y endpoints
 - **request/**: Archivo con ejemplos de peticiones HTTP para pruebas
 
+---
+
+## Documentación de la API de Obras (CRUD)
+
+El módulo de Obras gestiona la persistencia de los datos correspondientes a las obras de construcción. La validación se gestiona mediante un middleware dedicado.
+
+### Estructura de Datos (Esquema Mongoose)
+
+| Campo | Tipo | Requerido | Descripción |
+| :--- | :--- | :--- | :--- |
+| `nombre` | String | Sí | Nombre representativo de la obra. |
+| `direccion` | String | Sí | Dirección física (calle y número). |
+| `provincia` | String | Sí | Provincia donde se ubica. |
+| `director` | String | Sí | Nombre del profesional a cargo de la obra. |
+| `tipo_contratacion` | String | Sí | Tipo de contrato (`licitacion`, `privada`, `inversion`). |
+| `estado` | String | Sí | Estado del proyecto (`Trámites`, `Planificación`, `Construcción`, `Cierre`). |
+| `presupuestoTotal` | Number | Sí | Presupuesto monetario total asignado (debe ser `>= 0`). |
+| `telefono` | String | No | Teléfono de contacto asociado. |
+
+### Endpoints del CRUD
+
+La ruta base del módulo de Obras es `http://localhost:3001/api/obras`.
+
+#### 1. Obtener todas las Obras
+- **URL:** `/api/obras`
+- **Método:** `GET`
+- **Respuesta Exitosa:** `200 OK` con un array JSON de las obras.
+
+#### 2. Obtener una Obra por ID
+- **URL:** `/api/obras/:id`
+- **Método:** `GET`
+- **Respuesta Exitosa:** `200 OK` con el objeto de la obra.
+- **Respuesta de Error:** `404 Not Found` (si no existe) o `500 Internal Server Error` (ID no válido).
+
+#### 3. Registrar una Nueva Obra
+- **URL:** `/api/obras`
+- **Método:** `POST`
+- **Headers:** `Content-Type: application/json`
+- **Middleware de Validación:** `validarObra` (valida la presencia de campos obligatorios y tipos de datos correctos).
+- **Ejemplo de Payload (JSON):**
+  ```json
+  {
+    "nombre": "Edificio Torre Alvear",
+    "direccion": "Av. Alvear 1850, Recoleta",
+    "provincia": "Buenos Aires",
+    "director": "Eduardo Elsztain",
+    "tipo_contratacion": "privada",
+    "estado": "Planificación",
+    "presupuestoTotal": 50000000,
+    "telefono": "11-3333-4444"
+  }
+  ```
+- **Respuesta Exitosa:** `201 Created` con el objeto de la obra creada.
+- **Respuesta de Error:** `400 Bad Request` si la validación falla (campos faltantes, presupuesto negativo, estado inválido, etc.).
+
+#### 4. Actualizar una Obra por ID
+- **URL:** `/api/obras/:id`
+- **Método:** `PUT`
+- **Headers:** `Content-Type: application/json`
+- **Middleware de Validación:** `validarObra`
+- **Respuesta Exitosa:** `200 OK` con el objeto actualizado.
+- **Respuesta de Error:** `400 Bad Request` si la validación del payload falla, o `404 Not Found` si el ID no corresponde a ninguna obra.
+
+#### 5. Eliminar una Obra por ID
+- **URL:** `/api/obras/:id`
+- **Método:** `DELETE`
+- **Respuesta Exitosa:** `200 OK` con el mensaje de confirmación de eliminación.
+- **Respuesta de Error:** `404 Not Found` si la obra no existe.
+
+---
+
 ## Información del Grupo
 
 **BLP Technologies**

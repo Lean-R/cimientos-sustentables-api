@@ -1,32 +1,23 @@
-import { readFileSync, writeFileSync } from "fs"; // file sistem (para interactuar con los archivos)
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import mongoose from "mongoose";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const esquemaObras = new mongoose.Schema(
+  {
+    nombre: {type: String,required: true,trim: true,},
+    direccion: {type: String,required: true,trim: true,},
+    provincia: {type: String,required: true,trim: true,},
+    director: {type: String,required: true,trim: true,},
+    tipo_contratacion: {type: String,required: true,trim: true},
+    estado: {type: String,required: true,trim: true,},
+    presupuestoTotal: {type: Number,required: true,min: 0,},
+    telefono: { type: String, trim: true }  
+  },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
+);
 
-const obrasDBPath = join(__dirname, "../data/obras.json"); //esta linea declara el path de las obras de las obras;
+const Obra = mongoose.model("Obra", esquemaObras);
 
-const leerObras = () => {
-  try {
-    const obrasData = readFileSync(obrasDBPath, "utf-8"); //lee obras.json
-    const obras = JSON.parse(obrasData); // Transforma el texto de obras.json a codigo de JS
-    return obras;
-  } catch (error) {
-    console.log("Ocurrio un Error al ver las obras ");
-    return [];
-  }
-};
-
-const guardarObras = (nuevaObra) => {
-  try {
-    writeFileSync(obrasDBPath, JSON.stringify(nuevaObra, null, 3)); //Transforma a JSONString la nueva obra y lo guarda en obrasDBPath
-    console.log(`La obra se guardo correctamente`);
-    return true;
-  } catch (error) {
-    console.log(`Ocurrio un error al guardar la obra`);
-    return false;
-  }
-};
-
-export { leerObras, guardarObras };
+export default Obra;
