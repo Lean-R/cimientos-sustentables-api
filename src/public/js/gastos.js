@@ -10,9 +10,21 @@ document.addEventListener('DOMContentLoaded', () => {
             // 1. Capturamos los datos de los inputs del formulario
             const formData = new FormData(formGasto);
             const data = Object.fromEntries(formData.entries());
+            
+
+            if (data.cantidad) {
+                data.cantidad = parseInt(data.cantidad, 10);
+            }
+            // 2. Convertimos el monto a número
+            if (data.monto && data.monto.trim() !== "") {
+                data.monto = parseFloat(data.monto);
+            } else {
+                // Si fue enviado vacío, lo eliminamos del objeto para que Mongo use el 'default: 0'
+                delete data.monto; 
+            }
+
             console.log("Datos que viajan al servidor:", data);
-            // 2. Convertimos el monto a número (importante para el Service)
-            data.monto = Number(data.monto);
+            
 
             try {
                 // 3. Enviamos la petición POST a la API
@@ -38,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.error('Error al enviar el gasto:', error);
                 alert('Ocurrió un error en la conexión con el servidor.');
-                console.log(JSON.stringify(result));
+                
             }
         });
     }

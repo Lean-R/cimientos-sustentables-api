@@ -1,16 +1,16 @@
 export const validarGasto = (req, res, next) => {
-  const { obra_id, concepto, monto } = req.body;
+  const { obra_id, concepto, cantidad, unidad, monto } = req.body;
 
   // 1. Validamos que existan los campos obligatorios
-  if (!obra_id || !concepto || !monto) {
+  if (!obra_id || !concepto || !cantidad || !unidad ) {
     return res.status(400).json({
       message:
-        "Error de validación: obra_id, concepto y monto son obligatorios.",
+        "Error de validación: obra_id, concepto, cantidad, unidad y monto son obligatorios.",
     });
   }
 
   // 2. Validamos que el monto sea un número positivo
-  if (isNaN(monto) || monto <= 0) {
+  if (isNaN(monto) || monto < 0) {
     return res.status(400).json({
       message: "Error de validación: El monto debe ser un número mayor a cero.",
     });

@@ -11,7 +11,22 @@ html
 
     form#formGasto
       input(type="hidden" id="obra_id" name="obra_id" value=obraId)
-      input(type="hidden" id="partida_id" name="partida_id" value=partidaId)
+      //- input(type="hidden" id="partida_id" name="partida_id" value=partidaId)
+
+      br
+
+      div
+        label(for="partida_id") Partida Presupuestaria:
+        select(id="partida_id" name="partida_id")
+          option(value="") Seleccionar partida
+          //- Aquí simula las partidas fijas (reemplaza los values por IDs reales si ya los tienes, o textos provisionales)
+          option(value="partida_preliminares") Trabajos preliminares y gestión verde
+          option(value="partida_infraestructura") Infraestructura y fundaciones
+          option(value="partida_envolvente") Envolvente sustentable
+          option(value="partida_aberturas") Aberturas de alta prestación
+          option(value="partida_instalaciones") Instalaciones Bio-eficientes
+          option(value="partida_revestimientos") Revestimientos y Terminaciones
+          option(value="partida_limpieza") Limpieza y Entrega
 
       br
 
@@ -22,38 +37,33 @@ html
       br
 
       div
-        label(for="concepto") Rubro:
-        select(id="concepto" name="concepto")
-          option(value="") Seleccionar
-          option(value="Trabajos preliminares y gestión verde") Trabajos preliminares y gestión verde
-          option(value="Infraestructura y fundaciones") Infraestructura y fundaciones
-          option(value="Envolvente sustentable") Envolvente sustentable
-          option(value="Aberturas de alta prestación") Aberturas de alta prestación
-          option(value="Instalaciones Bio-eficientes") Instalaciones Bio-eficientes
-          option(value="Revestimientos y Terminaciones") Revestimientos y Terminaciones 
-          option(value="Limpieza y Entrega") Limpieza y Entrega
+        label(for="concepto") Concepto / Detalle corto:
+        input(type="text" id="concepto" name="concepto" placeholder="Ej: Compra de tirantes de madera certificada")
 
       br
 
       div
-        label(for="proveedor") Proveedor:
-        input(type="text" id="proveedor" name="proveedor")
+        label(for="cantidad") Cantidad:
+        input(type="number" id="cantidad" name="cantidad" step="1" min="1")
 
       br
 
       div
-        label(for="monto") Monto:
-        input(type="number" id="monto" name="monto")
+        label(for="unidad") Unidad de medida:
+        select(id="unidad" name="unidad")
+          option(value="") Seleccionar unidad
+          option(value="unidades") Unidades
+          option(value="litros") Litros(L)
+          option(value="kilos") Kilos(Kg)
+          option(value="metros") Metros(m)
+          option(value="m2") Metros cuadrados(m²)
+          option(value="m3") Metros cúbicos(m³)
 
       br
 
       div
-        label(for="estado") Estado:
-        select(id="estado" name="estado")
-          option(value="") Seleccionar
-          option(value="Solicitado") Solicitado
-          option(value="Autorizado") Autorizado
-          option(value="Pagado") Pagado
+        label(for="monto") Monto Estimado:
+        input(type="number" id="monto" name="monto" step="0.01" min="0.01" placeholder="(Estimado)")
 
       br
 

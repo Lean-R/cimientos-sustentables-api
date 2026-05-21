@@ -8,7 +8,7 @@ async function cargarGastos(obraId) {
 
     try {
         // 1. Petición a nuestra API de gastos
-        const response = await fetch('/api/gastos');
+        const response = await fetch(`/api/gastos?obra_id=${obraId}`);
         
         if (!response.ok) {
             throw new Error(`Error en la petición: ${response.statusText}`);
@@ -16,34 +16,32 @@ async function cargarGastos(obraId) {
 
         const todosLosGastos = await response.json();
 
-        // 2. Filtrar los gastos que pertenecen a esta obra
-        // Usamos obra_id porque así lo definimos en  GastosService
-        const gastosObra = todosLosGastos.filter(g => g.obra_id === obraId);
-
-        // 3. Validar si hay gastos
-        if (gastosObra.length === 0) {
+        
+        // 2. Validar si hay gastos
+        if (todosLosGastos.length === 0) {
             container.innerHTML = '<p>No hay gastos registrados en esta obra.</p>';
             totalSpan.innerText = '$0';
             return;
         }
 
-        // 4. Construir la tabla de gastos
+        // 3. Construir la tabla de gastos
         let acumulado = 0;
         let html = `
             <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                 <thead>
                     <tr style="background-color: #f2f2f2; text-align: left;">
                         <th>Fecha</th>
-                        <th>Concepto</th>
-                        <th>Proveedor</th>
-                        <th>Monto</th>
+                        <th>Concepto / Detalle</th>
+                        <th style="text-align: center;">Cantidad</th>
+                        <th style="text-align: center;">Unidad</th>
+                        <th>Monto Estimado</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
 
-        gastosObra.forEach(g => {
+        todosLosGastos.forEach(g => {
             // Sumamos al total (asegurándonos de que sea número)
             acumulado += Number(g.monto);
 
@@ -54,7 +52,8 @@ async function cargarGastos(obraId) {
                 <tr>
                     <td>${fechaFormateada}</td>
                     <td>${g.concepto || 'Sin concepto'}</td>
-                    <td>${g.proveedor || 'N/A'}</td>
+                    <td style="text-align: center;">${g.cantidad || 'N/A'}</td>
+                    <td style="text-align: center;">${g.unidad || 'N/A'}</td>
                     <td>$${Number(g.monto).toLocaleString()}</td>
                     <td>
                         <span style="padding: 2px 6px; border-radius: 4px; background: #eee; font-size: 0.85em;">

@@ -18,7 +18,7 @@ const GastosController = {
       const filtros = {};
 
       if (obra_id) filtros.obra_id = obra_id;
-      // if (partida_id) filtros.partida_id = partida_id;
+      if (partida_id) filtros.partida_id = partida_id;
 
       const gastos = await GastosService.getAll(filtros);
       res.status(200).json(gastos);
@@ -50,22 +50,18 @@ const GastosController = {
   createGasto: async (req, res) => {
     try {
       // Extraemos los datos del cuerpo de la petición
-      const { obra_id, partida_id, fecha, proveedor, concepto, monto, estado } =
+      const { obra_id, partida_id, fecha, concepto, cantidad, unidad, monto } =
         req.body;
-
-      // Validación básica inicial
-      if (!obra_id || !concepto || !monto) {
-        return res.status(400).json({ message: "Faltan campos obligatorios" });
-      }
 
       const nuevoGasto = await GastosService.create({
         obra_id,
         partida_id,
         fecha,
-        proveedor,
         concepto,
+        cantidad,
+        unidad,
         monto,
-        estado,
+        estado: "pendiente", // Estado inicial por defecto
       });
 
       // if (req.headers.accept && req.headers.accept.includes('text/html')) {
