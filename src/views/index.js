@@ -15,9 +15,14 @@ router.get("/", (req, res) => {
 });
 
 // ---------- Rutas para OBRAS ----------
-router.get("/obras", (req, res) => {
-  const obras = getAllObras();
-  res.render("obras/index", { obras });
+router.get("/obras", async (req, res) => {
+  try {
+    const obras = await getAllObras();
+    res.render("obras/index", { obras });
+  } catch (error) {
+    console.error("Error al renderizar obras:", error);
+    res.status(500).send("Error interno al cargar obras");
+  }
 });
 
 // Crear obra
@@ -26,39 +31,62 @@ router.get("/obras/nueva", (req, res) => {
 });
 
 // Guardar obra nueva
-router.post("/obras", (req, res) => {
-  if (req.body.presupuestoTotal) {
-    req.body.presupuestoTotal = Number(req.body.presupuestoTotal);
+router.post("/obras", async (req, res) => {
+  try {
+    if (req.body.presupuestoTotal) {
+      req.body.presupuestoTotal = Number(req.body.presupuestoTotal);
+    }
+    await createObra(req.body);
+    res.redirect("/obras");
+  } catch (error) {
+    console.error("Error al crear la obra:", error);
+    res.status(500).send("Error interno al crear obra");
   }
-  createObra(req.body);
-  res.redirect("/obras");
 });
 
 // Editar obra
-router.get("/obras/editar/:id", (req, res) => {
-  const obra = getObraByID(req.params.id);
-  res.render("obras/form", { obra });
+router.get("/obras/editar/:id", async (req, res) => {
+  try {
+    const obra = await getObraByID(req.params.id);
+    if (!obra) {
+      return res.status(404).send("Obra no encontrada");
+    }
+    res.render("obras/form", { obra });
+  } catch (error) {
+    console.error("Error al obtener la obra para editar:", error);
+    res.status(500).send("Error interno del servidor");
+  }
 });
 
 // Guardar obra editada
-router.post("/obras/editar/:id", (req, res) => {
-  if (req.body.presupuestoTotal) {
-    req.body.presupuestoTotal = Number(req.body.presupuestoTotal);
+router.post("/obras/editar/:id", async (req, res) => {
+  try {
+    if (req.body.presupuestoTotal) {
+      req.body.presupuestoTotal = Number(req.body.presupuestoTotal);
+    }
+    await updateObra(req.params.id, req.body);
+    res.redirect("/obras");
+  } catch (error) {
+    console.error("Error al actualizar la obra:", error);
+    res.status(500).send("Error interno al actualizar obra");
   }
-  updateObra(req.params.id, req.body);
-  res.redirect("/obras");
 });
 
 // Eliminar obra
-router.get("/obras/eliminar/:id", (req, res) => {
-  deleteObra(req.params.id);
-  res.redirect("/obras");
+router.get("/obras/eliminar/:id", async (req, res) => {
+  try {
+    await deleteObra(req.params.id);
+    res.redirect("/obras");
+  } catch (error) {
+    console.error("Error al eliminar la obra:", error);
+    res.status(500).send("Error interno al eliminar obra");
+  }
 });
 
 // Detalle de obra
 router.get("/obras/:id", async (req, res) => {
   try {
-    const obra = getObraByID(req.params.id);
+    const obra = await getObraByID(req.params.id);
 
     if (!obra) {
       return res.status(404).send("Obra no encontrada");

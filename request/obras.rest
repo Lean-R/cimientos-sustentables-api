@@ -1,15 +1,61 @@
 ### Variables globales
 @api = http://localhost:3001/api
 
-### Obtener todas las obras
+### 1. Obtener todas las obras
 GET {{api}}/obras
 
-### Registrar nueva obra de construcción
+### 2. Registrar nueva obra de construcción (Correcta)
+# NOTA: Al enviar la petición, Mongoose creará automáticamente un ObjectId único.
+# Reemplaza el ID en las siguientes consultas con el ID de la respuesta de esta creación.
 POST {{api}}/obras
 Content-Type: application/json
 
 {
-    "nombre": "Edificio Alvear",
-    "ubicacion": "Av. Corrientes 123",
-    "presupuesto": 50000000
+  "nombre": "Edificio Torre Alvear",
+  "direccion": "Av. Alvear 1850, Recoleta",
+  "provincia": "Buenos Aires",
+  "director": "Eduardo Elsztain",
+  "tipo_contratacion": "privada",
+  "estado": "Planificación",
+  "presupuestoTotal": 50000000,
+  "telefono": "11-3333-4444"
 }
+
+### 3. Registrar obra (Petición INCORRECTA para probar la validación)
+# Debería devolver HTTP 400 Bad Request con un mensaje de validación.
+POST {{api}}/obras
+Content-Type: application/json
+
+{
+  "nombre": "Obra Invalida",
+  "direccion": "Calle Falsa 123",
+  "provincia": "Buenos Aires",
+  "director": "Juan Perez",
+  "tipo_contratacion": "licitacion-invalida",
+  "estado": "En curso",
+  "presupuestoTotal": -5000
+}
+
+### 4. Obtener una obra por ID
+# Reemplaza el ID al final de la URL con uno obtenido en la consulta GET general o al crear.
+GET {{api}}/obras/664bd9f0dc752c002bc56b3c
+
+### 5. Actualizar los datos de una obra por ID (Edición)
+# Reemplaza el ID al final de la URL con un ID válido.
+PUT {{api}}/obras/664bd9f0dc752c002bc56b3c
+Content-Type: application/json
+
+{
+  "nombre": "Edificio Torre Alvear - Fase II",
+  "direccion": "Av. Alvear 1850, Recoleta",
+  "provincia": "Buenos Aires",
+  "director": "Eduardo Elsztain",
+  "tipo_contratacion": "privada",
+  "estado": "Construcción",
+  "presupuestoTotal": 65000000,
+  "telefono": "11-3333-5555"
+}
+
+### 6. Eliminar una obra por ID
+# Reemplaza el ID al final de la URL con un ID válido.
+DELETE {{api}}/obras/664bd9f0dc752c002bc56b3c
