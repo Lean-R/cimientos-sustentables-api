@@ -1,164 +1,160 @@
-extends ../layout
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= `Detalle de obra - ${obra.nombre}`
 
-block content
-  - const totalPresupuesto = Number(totalPartidas || obra.presupuestoTotal || 0)
-  - const totalGastosVista = Number(totalGastos || 0)
+  body
+    h1= obra.nombre
 
-  .page-head
-    div
-      p.page-kicker Detalle de obra
-      h1.page-title= obra.nombre
-      p.page-lead Vista operativa con datos generales, presupuesto por partidas, solicitudes de materiales y gastos registrados.
-    .actions
-      a.btn.btn--secondary(href=`/partidas/nueva?obraId=${obra.id}`) + Cargar partida
-      a.btn(href=`/materiales/nuevo?obraId=${obra.id}`) Solicitar materiales
-      a.btn.btn--ghost(href=`/gastos/nuevo?obraId=${obra.id}`) Registrar gasto
+    h2 Datos generales
 
-  .grid.grid--3
-    .metric
-      span Presupuesto por partidas
-      strong $#{totalPresupuesto.toLocaleString("es-AR")}
-    .metric
-      span Gastos registrados
-      strong $#{totalGastosVista.toLocaleString("es-AR")}
-    .metric
-      span Estado actual
-      strong= obra.estado
+    p
+      strong Nombre:
+      |  #{obra.nombre}
 
-  .panel
-    .panel__header
-      div
-        h2.panel__title Datos generales
-        p.panel__text Informacion base cargada en la primera etapa.
-      a.btn.btn--small.btn--secondary(href=`/obras/editar/${obra.id}`) Editar datos
-    .panel__body
-      .detail-list
-        .detail-item
-          span Direccion
-          strong= obra.direccion
-        .detail-item
-          span Provincia
-          strong= obra.provincia
-        .detail-item
-          span Director de obra
-          strong= obra.director
-        .detail-item
-          span Telefono de contacto
-          strong= obra.telefono || "Sin telefono"
-        .detail-item
-          span Tipo de contratacion
-          strong= obra.tipo_contratacion
-        .detail-item
-          span Presupuesto historico
-          strong $#{Number(obra.presupuestoTotal || 0).toLocaleString("es-AR")}
+    p
+      strong Dirección:
+      |  #{obra.direccion}
 
-  if !partidas || !partidas.length
-    .step-card
-      h2 Siguiente paso recomendado
-      p Esta obra todavia no tiene partidas presupuestarias. Cargalas para construir el presupuesto y habilitar una lectura mas clara de gastos y materiales.
-      .form-actions
-        a.btn(href=`/partidas/nueva?obraId=${obra.id}`) Cargar primera partida
+    p
+      strong Provincia:
+      |  #{obra.provincia}
 
-  .panel
-    .panel__header
-      div
-        h2.panel__title Partidas presupuestarias
-        p.panel__text Rubros e items que componen el presupuesto de la obra.
-      span.tag #{partidas ? partidas.length : 0} partidas
-    .panel__body
-      if partidas && partidas.length
-        each partida in partidas
-          .partida-card
-            .partida-card__head
-              div
-                h3= partida.rubro
-                p.panel__text Total: $#{Number(partida.precio_total || 0).toLocaleString("es-AR")}
-              .actions
-                a.btn.btn--small.btn--secondary(href=`/partidas/editar?partidaId=${partida.id}&obraId=${obra.id}`) Editar
-                a.btn.btn--small.btn--danger(href="#" onclick=`event.preventDefault(); eliminarPartida('${partida.id}');`) Eliminar
-            .partida-card__body
-              if partida.items && partida.items.length
-                .table-wrap
-                  table.data-table
-                    thead
-                      tr
-                        th Detalle
-                        th Cantidad
-                        th Unidad
-                        th Precio unitario
-                        th Parcial
-                    tbody
-                      each item in partida.items
-                        tr
-                          td= item.detalle
-                          td= item.cantidad
-                          td= item.unidad_medida
-                          td $#{Number(item.precio_unitario || 0).toLocaleString("es-AR")}
-                          td $#{Number(item.precio_parcial || 0).toLocaleString("es-AR")}
-              else
-                p.panel__text Esta partida no tiene items cargados.
-      else
-        .empty-state
-          p No hay partidas presupuestarias en esta obra.
+    p
+      strong Director de obra:
+      |  #{obra.director}
 
-  .panel
-    .panel__header
-      div
-        h2.panel__title Gastos registrados
-        p.panel__text Seguimiento de consumos y compras asociados a la obra.
-      a.btn.btn--small(href=`/gastos/nuevo?obraId=${obra.id}`) + Registrar gasto
-    .panel__body
-      if gastos && gastos.length
-        .table-wrap
-          table.data-table
+    p
+      strong Teléfono de contacto:
+      |  #{obra.telefono}
+
+    p
+      strong Tipo de contratación:
+      |  #{obra.tipo_contratacion}
+
+    p
+      strong Estado:
+      |  #{obra.estado}
+
+    hr
+
+    h2 Presupuesto
+
+    if tienePartidas
+      p
+        strong Presupuesto total:
+        |  $#{totalPartidas.toLocaleString()}
+
+      h3 Partidas presupuestarias
+      each partida in partidas
+        div(style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd;")
+          p
+            a(href=`/partidas/editar?partidaId=${partida.id}&obraId=${obra.id}`) Editar
+            |  |
+            a(href="#" onclick=`event.preventDefault(); eliminarPartida('${partida.id}')`) Eliminar
+          p
+            strong Rubro:
+            |  #{partida.rubro}
+          p
+            strong Precio total:
+            |  $#{Number(partida.precio_total).toLocaleString()}
+
+          h4 Items:
+          table(border="1" cellpadding="5" cellspacing="0")
             thead
               tr
-                th Fecha
-                th Concepto
-                th Partida
+                th Detalle
                 th Cantidad
-                th Unidad
-                th Monto
-                th Estado
+                th Unidad de medida
+                th Precio unitario
+                th Precio parcial
             tbody
-              each gasto in gastos
+              each item in partida.items
                 tr
-                  td= gasto.fecha ? new Date(gasto.fecha).toLocaleDateString("es-AR") : "S/D"
-                  td= gasto.concepto || "Sin concepto"
-                  td= gasto.partidaRubro || gasto.partida_id || "Sin partida"
-                  td= gasto.cantidad || "N/A"
-                  td= gasto.unidad || "N/A"
-                  td $#{Number(gasto.monto || 0).toLocaleString("es-AR")}
-                  td
-                    span.status-pill= gasto.estado || "pendiente"
+                  td= item.detalle
+                  td= item.cantidad
+                  td= item.unidad_medida
+                  td $#{Number(item.precio_unitario).toLocaleString()}
+                  td $#{Number(item.precio_parcial).toLocaleString()}
+
+      hr
+
+      h2 Gastos registrados
+
+      if gastos.length > 0
+        table(border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; margin-top: 10px;")
+          thead
+            tr(style="background-color: #f2f2f2; text-align: left;")
+              th Fecha
+              th Partida
+              th Concepto / Detalle
+              th(style="text-align: center;") Cantidad
+              th(style="text-align: center;") Unidad
+              th Monto
+              th Estado
+          tbody
+            each gasto in gastos
+              tr
+                td= gasto.fecha ? new Date(gasto.fecha).toLocaleDateString() : 'S/D'
+                td= gasto.partidaRubro || 'Sin partida'
+                td= gasto.concepto || 'Sin concepto'
+                td(style="text-align: center;")= gasto.cantidad || 'N/A'
+                td(style="text-align: center;")= gasto.unidad || 'N/A'
+                td $#{Number(gasto.monto).toLocaleString()}
+                td
+                  span(style="padding: 2px 6px; border-radius: 4px; background: #eee; font-size: 0.85em;")= gasto.estado || 'Pendiente'
       else
-        .empty-state
-          p No hay gastos registrados en esta obra.
+        p No hay gastos registrados en esta obra.
 
-  .form-actions
-    a.btn.btn--ghost(href="/obras") Volver al listado
+      p
+        strong Total gastos registrados:
+        |  $#{totalGastos.toLocaleString()}
 
-  script.
-    async function eliminarPartida(partidaId) {
-      const confirmar = confirm('¿Estas seguro de que deseas eliminar esta partida presupuestaria?');
+      hr
 
-      if (!confirmar) {
-        return;
-      }
+      p
+        a(href=`/gastos/nuevo?obraId=${obra.id}`) + Registrar gasto
+        |  |
+        a(href=`/materiales/nueva-solicitud?obraId=${obra.id}`) + Solicitud de materiales
 
-      try {
-        const response = await fetch(`/api/partidas/${partidaId}`, {
-          method: 'DELETE'
-        });
+    else
+      p
+        strong Presupuesto total:
+        |  Pendiente
 
-        if (!response.ok) {
-          throw new Error('Error al eliminar la partida');
+      p Todavía no se cargaron las partidas presupuestarias.
+
+      p
+        a(href=`/partidas/cargar?obraId=${obra.id}` style="padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 4px; display: inline-block;") + Cargar partidas presupuestarias
+
+    hr
+
+    p
+      a(href="/obras") Volver al listado
+
+    script.
+      async function eliminarPartida(partidaId) {
+        const confirmar = confirm('¿Estás seguro de que deseás eliminar esta partida presupuestaria?');
+
+        if (!confirmar) {
+          return;
         }
 
-        alert('Partida eliminada correctamente');
-        window.location.reload();
-      } catch (error) {
-        alert('Error: ' + error.message);
-        console.error('Error:', error);
+        try {
+          const response = await fetch(`/api/partidas/${partidaId}`, {
+            method: 'DELETE'
+          });
+
+          if (!response.ok) {
+            throw new Error('Error al eliminar la partida');
+          }
+
+          alert('¡Partida eliminada correctamente!');
+          location.reload();
+        } catch (error) {
+          alert('Error: ' + error.message);
+          console.error('Error:', error);
+        }
       }
-    }

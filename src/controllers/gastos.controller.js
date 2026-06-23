@@ -1,20 +1,6 @@
 import GastosService from "../services/gastos.service.js";
 
 const GastosController = {
-  //Para renderizar el formulario de nuevo gasto
-  renderFormNuevo: async (req, res) => {
-    try {
-      const { obraId } = req.query;
-      res.render("gastos/form", {
-        obraId,
-        partidas: [],
-        pageTitle: "Nuevo gasto",
-      }); // nombre archivo .pug
-    } catch (error) {
-      res.status(500).send("Error al cargar el formulario");
-    }
-  },
-
   // Obtener todos los gastos
   getGastos: async (req, res) => {
     try {

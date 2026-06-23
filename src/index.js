@@ -1,11 +1,9 @@
 import express from "express";
 import routes from "./routes/index.js";
 import views from "./views/index.js";
-import materialesRouter from "./routes/materiales.routes.js";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
-
 
 // Configurar __dirname para ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -46,8 +44,7 @@ app.set("views", join(__dirname, "views"));
 
 // Router para vistas PUG
 app.use("/", views);
-// Router para materiales
-app.use("/materiales", materialesRouter);
+
 // Router para API REST
 app.use("/api", routes);
 
