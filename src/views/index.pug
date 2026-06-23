@@ -1,84 +1,54 @@
-html
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport" content="width=device-width, initial-scale=1.0")
-        title Cimientos Sustentables e Hijos SA - Sistema de Gestión de Obras
-        style.
-            body {
-                font-family: Arial, Helvetica, sans-serif;
-                max-width: 480px;
-                margin: 40px auto;
-                padding: 0 20px;
-            }
-            .header {
-                text-align: center;
-            }
-            .header .logo {
-                display: block;
-                margin: 0 auto 15px auto;
-                max-width: 100%;
-                height: auto;
-                width: 420px;
-            }
-            #loginForm {
-                margin: 30px 0;
-            }
-            .form-row {
-                display: flex;
-                align-items: center;
-                margin-bottom: 14px;
-            }
-            .form-row label {
-                width: 110px;
-                flex-shrink: 0;
-            }
-            .form-row input {
-                flex: 1;
-                padding: 6px 8px;
-                box-sizing: border-box;
-            }
-            .form-actions {
-                margin-top: 20px;
-            }
-            .form-actions button {
-                padding: 8px 20px;
-                cursor: pointer;
-            }
-    body
-        .header
-            img.logo(src="/logo-cimientos.png" alt="Logo Cimientos Sustentables e Hijos SA")
-            h3 Sistema de Gestión de Obras
+extends layout
 
-        form#loginForm
-            .form-row
-                label(for="username") Usuario:
-                input#username(type="text" name="username" required)
-            .form-row
-                label(for="password") Contraseña:
-                input#password(type="password" name="password" required)
-            .form-actions
-                button(type="submit") Iniciar sesión
+block content
+  - var pageTitle = "Iniciar sesion"
+  - var hideShell = true
+  - var bodyClass = "login-page"
 
-        script.
-            document.getElementById('loginForm').addEventListener('submit', async (event) => {
-                event.preventDefault();
+  .login-card
+    section.login-card__brand
+      img.login-card__logo(src="/logo-cimientos.png" alt="Logo Cimientos Sustentables e Hijos SA")
+      div
+        p.page-kicker Sistema administrativo
+        h1 Gestion de obras sustentables
+      p Control de obras, partidas presupuestarias, solicitudes de materiales y gastos desde una interfaz clara para el equipo de obra.
 
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
+    section.login-card__form
+      h2 Iniciar sesion
+      p Acceso interno para administracion y direccion de obra.
 
-                try {
-                    const response = await fetch('/api/auth/login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username, password })
-                    });
+      form#loginForm.form
+        .field
+          label(for="username") Usuario
+          input#username(type="text" name="username" autocomplete="username" required)
 
-                    if (response.ok) {
-                        window.location.href = '/obras';
-                    } else {
-                        alert('Credenciales incorrectas');
-                    }
-                } catch (error) {
-                    alert('Credenciales incorrectas');
-                }
-            });
+        .field
+          label(for="password") Contrasena
+          input#password(type="password" name="password" autocomplete="current-password" required)
+
+        .form-actions
+          button.btn(type="submit") Entrar al sistema
+
+  script.
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        if (response.ok) {
+          window.location.href = '/obras';
+        } else {
+          alert('Credenciales incorrectas');
+        }
+      } catch (error) {
+        alert('Credenciales incorrectas');
+      }
+    });

@@ -11,14 +11,18 @@ const router = Router();
 
 // Ruta raíz
 router.get("/", (req, res) => {
-  res.render("index");
+  res.render("index", {
+    pageTitle: "Iniciar sesion",
+    hideShell: true,
+    bodyClass: "login-page",
+  });
 });
 
 // ---------- Rutas para OBRAS ----------
 router.get("/obras", async (req, res) => {
   try {
     const obras = await getAllObras();
-    res.render("obras/index", { obras });
+    res.render("obras/index", { obras, pageTitle: "Obras cargadas" });
   } catch (error) {
     console.error("Error al renderizar obras:", error);
     res.status(500).send("Error interno al cargar obras");
@@ -27,17 +31,17 @@ router.get("/obras", async (req, res) => {
 
 // Crear obra
 router.get("/obras/nueva", (req, res) => {
-  res.render("obras/form");
+  res.render("obras/form", { pageTitle: "Nueva obra" });
 });
 
 // Guardar obra nueva
 router.post("/obras", async (req, res) => {
   try {
-    if (req.body.presupuestoTotal) {
-      req.body.presupuestoTotal = Number(req.body.presupuestoTotal);
-    }
-    await createObra(req.body);
-    res.redirect("/obras");
+    req.body.presupuestoTotal = req.body.presupuestoTotal
+      ? Number(req.body.presupuestoTotal)
+      : 0;
+    const nuevaObra = await createObra(req.body);
+    res.redirect(`/obras/${nuevaObra.id}`);
   } catch (error) {
     console.error("Error al crear la obra:", error);
     res.status(500).send("Error interno al crear obra");
@@ -51,7 +55,7 @@ router.get("/obras/editar/:id", async (req, res) => {
     if (!obra) {
       return res.status(404).send("Obra no encontrada");
     }
-    res.render("obras/form", { obra });
+    res.render("obras/form", { obra, pageTitle: "Editar obra" });
   } catch (error) {
     console.error("Error al obtener la obra para editar:", error);
     res.status(500).send("Error interno del servidor");
@@ -126,6 +130,7 @@ router.get("/obras/:id", async (req, res) => {
       gastos: gastosDeLaObra,
       totalPartidas,
       totalGastos,
+      pageTitle: obra.nombre,
     });
   } catch (error) {
     console.error("Error al obtener detalles de la obra:", error);
@@ -138,22 +143,38 @@ router.get("/obras/:id", async (req, res) => {
 // Crear partida
 router.get("/partidas/nueva", (req, res) => {
   const obraId = req.query.obraId;
-  res.render("partidas/form", { obraId, partidaId: null });
+  res.render("partidas/form", {
+    obraId,
+    partidaId: null,
+    pageTitle: "Nueva partida presupuestaria",
+  });
 });
 
 // Editar partida
 router.get("/partidas/editar", (req, res) => {
   const obraId = req.query.obraId;
   const partidaId = req.query.partidaId;
-  res.render("partidas/form", { obraId, partidaId });
+  res.render("partidas/form", {
+    obraId,
+    partidaId,
+    pageTitle: "Editar partida presupuestaria",
+  });
 });
 
 // ---------- Rutas para GASTOS ----------
 
 // Crear gasto
-router.get("/gastos/nuevo", (req, res) => {
+router.get("/gastos/nuevo", async (req, res) => {
   const obraId = req.query.obraId;
-  res.render("gastos/form", { obraId });
+  const todasPartidas = await PartidasPresupuestariasService.getAll();
+  const partidas = todasPartidas.filter(
+    (p) => String(p.obra_id) === String(obraId),
+  );
+  res.render("gastos/form", {
+    obraId,
+    partidas,
+    pageTitle: "Nuevo gasto",
+  });
 });
 
 export default router;

@@ -1,45 +1,53 @@
-doctype html
-html
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Obras registradas
+extends ../layout
 
-  body
-    h1 Obras registradas
-    p Estas son las obras cargadas en el sistema.
+block content
+  .page-head
+    div
+      p.page-kicker Panel de obras
+      h1.page-title Obras cargadas
+      p.page-lead Consulta el estado general de las obras, accede al detalle operativo y registra nuevas obras desde un flujo ordenado.
+    .actions
+      a.btn(href="/obras/nueva") + Nueva obra
 
-    a(href="/obras/nueva") + Nueva obra
+  .panel
+    .panel__header
+      div
+        h2.panel__title Listado de obras
+        p.panel__text Datos generales y accesos rapidos para administracion.
+      span.tag #{obras ? obras.length : 0} registradas
 
-    table(border="1")
-      
-      thead
-        
-         tr
-            th Nombre
-            th Dirección
-            th Provincia
-            th Director de obra
-            th Tipo de contratación
-            th Estado
-            th Presupuesto
-            th Acciones
-        
-      tbody
-        each obra in obras
-          tr
-            td= obra.nombre
-            td= obra.direccion
-            td= obra.provincia
-            td= obra.director
-            td= obra.tipo_contratacion
-            td= obra.estado
-            td= obra.presupuestoTotal
-            td
-             a(href=`/obras/${obra.id}`) Ver
-             |  | 
-             a(href=`/obras/editar/${obra.id}`) Editar
-             |  | 
-             a(href=`/obras/eliminar/${obra.id}`) Eliminar
-        
-        
+    if obras && obras.length
+      .table-wrap
+        table.data-table
+          thead
+            tr
+              th Nombre
+              th Ubicacion
+              th Director
+              th Contratacion
+              th Estado
+              th Contacto
+              th Acciones
+          tbody
+            each obra in obras
+              tr
+                td
+                  strong= obra.nombre
+                td
+                  div= obra.direccion
+                  small= obra.provincia
+                td= obra.director
+                td= obra.tipo_contratacion
+                td
+                  span.status-pill= obra.estado
+                td= obra.telefono || "Sin telefono"
+                td
+                  .actions
+                    a.btn.btn--small(href=`/obras/${obra.id}`) Ver detalle
+                    a.btn.btn--small.btn--secondary(href=`/obras/editar/${obra.id}`) Editar
+                    a.btn.btn--small.btn--danger(href=`/obras/eliminar/${obra.id}` onclick="return confirm('¿Eliminar esta obra? Esta accion no se puede deshacer desde la interfaz.')") Eliminar
+    else
+      .empty-state
+        h2 Todavia no hay obras cargadas
+        p Crea la primera obra para iniciar el circuito de partidas presupuestarias, materiales y gastos.
+        a.btn(href="/obras/nueva") Crear obra

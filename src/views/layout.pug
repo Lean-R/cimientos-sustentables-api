@@ -1,0 +1,22 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= pageTitle ? `${pageTitle} | Cimientos Sustentables e Hijos` : "Cimientos Sustentables e Hijos"
+    link(rel="stylesheet" href="/css/styles.css")
+  body(class=bodyClass)
+    if !hideShell
+      header.app-header
+        .app-header__inner
+          a.brand(href="/obras" aria-label="Ir al listado de obras")
+            img.brand__logo(src="/logo-cimientos.png" alt="Cimientos Sustentables e Hijos SA")
+            .brand__text
+              strong Cimientos Sustentables e Hijos
+              span Sistema de gestion de obras
+          nav.app-nav(aria-label="Navegacion principal")
+            a.app-nav__link(href="/obras") Obras
+            a.app-nav__link(href="/obras/nueva") Nueva obra
+
+    main(class=hideShell ? "login-main" : "app-main")
+      block content

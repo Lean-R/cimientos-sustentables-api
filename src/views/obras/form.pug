@@ -1,78 +1,72 @@
-doctype html
-html
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title= obra ? "Editar obra" : "Nueva obra"
+extends ../layout
 
-  body
-    h1= obra ? "Editar obra" : "Nueva obra"
-    p= obra ? "Modificá los datos de la obra seleccionada." : "Completá los datos para registrar una nueva obra."
-
-    form(action=obra ? `/obras/editar/${obra.id}` : "/obras" method="POST")
-      div
-        label(for="nombre") Nombre:
-        input(type="text" id="nombre" name="nombre" required value=obra ? obra.nombre : "")
-
-      br
-
-      div
-        label(for="direccion") Dirección:
-        input(type="text" id="direccion" name="direccion" required value=obra ? obra.direccion : "")
-
-      br
-
-      div
-        label(for="provincia") Provincia:
-        input(type="text" id="provincia" name="provincia" required value=obra ? obra.provincia : "")
-
-      br
-
-      div
-        label(for="director") Director de obra:
-        input(type="text" id="director" name="director" required value=obra ? obra.director : "")
-
-      br
-
-      div
-        label(for="tipo_contratacion") Tipo de contratación:
-        select(id="tipo_contratacion" name="tipo_contratacion" required)
-          option(value="") Seleccionar
-          option(value="licitacion" selected=obra && obra.tipo_contratacion === "licitacion") Licitación
-          option(value="privada" selected=obra && obra.tipo_contratacion === "privada") Privada
-          option(value="inversion" selected=obra && obra.tipo_contratacion === "inversion") Inversión
-
-      br
-
-      div
-        label(for="estado") Estado:
-        select(id="estado" name="estado" required)
-          option(value="") Seleccionar
-          option(value="Trámites" selected=obra && obra.estado === "Trámites") Trámites
-          option(value="Planificación" selected=obra && obra.estado === "Planificación") Planificación
-          option(value="Construcción" selected=obra && obra.estado === "Construcción") Construcción
-          option(value="Cierre" selected=obra && obra.estado === "Cierre") Cierre
-
-      br
-
-      div
-        label(for="presupuestoTotal") Presupuesto total:
-        input(type="number" id="presupuestoTotal" name="presupuestoTotal" min="0" step="any" required value=obra ? obra.presupuestoTotal : "")
-
-      br
-
-      div
-        label(for="telefono") Teléfono de contacto:
-        input(type="text" id="telefono" name="telefono" value=obra ? obra.telefono : "")
-
-      br
-      br
-
-      button(type="submit")= obra ? "Actualizar obra" : "Guardar obra"
-
-      br
-      br
+block content
+  .page-head
+    div
+      p.page-kicker= obra ? "Edicion de obra" : "Etapa 1 de carga"
+      h1.page-title= obra ? "Editar obra" : "Nueva obra"
+      p.page-lead= obra ? "Actualiza los datos generales de la obra sin modificar el presupuesto desde esta pantalla." : "Primero se registran los datos generales. El presupuesto se construye luego con las partidas presupuestarias."
+    .actions
       if obra
-        a(href=`/obras/${obra.id}`) Volver al detalle de la obra
+        a.btn.btn--ghost(href=`/obras/${obra.id}`) Volver al detalle
       else
-        a(href="/obras") Volver al listado de obras
+        a.btn.btn--ghost(href="/obras") Volver al listado
+
+  if !obra
+    .step-card
+      h2 Siguiente paso: partidas presupuestarias
+      p Al guardar la obra vas a poder cargar los rubros e items que forman el presupuesto real.
+
+  .panel
+    .panel__header
+      div
+        h2.panel__title Datos generales
+        p.panel__text Campos principales para identificar y administrar la obra.
+      span.tag.tag--ochre Sin presupuesto manual
+
+    .panel__body
+      form.form(action=obra ? `/obras/editar/${obra.id}` : "/obras" method="POST")
+        .form-grid
+          .field
+            label(for="nombre") Nombre de la obra
+            input(type="text" id="nombre" name="nombre" required value=obra ? obra.nombre : "" placeholder="Ej: Vivienda sustentable Los Alamos")
+
+          .field
+            label(for="direccion") Direccion
+            input(type="text" id="direccion" name="direccion" required value=obra ? obra.direccion : "" placeholder="Calle y altura")
+
+          .field
+            label(for="provincia") Provincia
+            input(type="text" id="provincia" name="provincia" required value=obra ? obra.provincia : "" placeholder="Ej: Buenos Aires")
+
+          .field
+            label(for="director") Director de obra
+            input(type="text" id="director" name="director" required value=obra ? obra.director : "" placeholder="Nombre y apellido")
+
+          .field
+            label(for="tipo_contratacion") Tipo de contratacion
+            select(id="tipo_contratacion" name="tipo_contratacion" required)
+              option(value="") Seleccionar
+              option(value="licitacion" selected=obra && obra.tipo_contratacion === "licitacion") Licitacion
+              option(value="privada" selected=obra && obra.tipo_contratacion === "privada") Privada
+              option(value="inversion" selected=obra && obra.tipo_contratacion === "inversion") Inversion
+
+          .field
+            label(for="estado") Estado
+            select(id="estado" name="estado" required)
+              option(value="") Seleccionar
+              option(value="Tramites" selected=obra && (obra.estado === "Tramites" || obra.estado === "Trámites")) Tramites
+              option(value="Planificacion" selected=obra && (obra.estado === "Planificacion" || obra.estado === "Planificación")) Planificacion
+              option(value="Construccion" selected=obra && (obra.estado === "Construccion" || obra.estado === "Construcción")) Construccion
+              option(value="Cierre" selected=obra && obra.estado === "Cierre") Cierre
+
+          .field
+            label(for="telefono") Telefono de contacto
+            input(type="text" id="telefono" name="telefono" value=obra ? obra.telefono : "" placeholder="Ej: 11 5555 5555")
+
+        .form-actions
+          button.btn(type="submit")= obra ? "Actualizar obra" : "Guardar obra"
+          if obra
+            a.btn.btn--ghost(href=`/obras/${obra.id}`) Cancelar
+          else
+            a.btn.btn--ghost(href="/obras") Cancelar

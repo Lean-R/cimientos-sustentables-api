@@ -1,148 +1,163 @@
-doctype html
-html
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Solicitud de materiales
+extends ../layout
 
-  body
-    h1#titulo Solicitud de materiales
-    p#descripcion Complete los materiales necesarios para la obra.
+block content
+  .page-head
+    div
+      p.page-kicker Director de obra
+      h1.page-title Solicitud de materiales
+      p.page-lead Selecciona una partida presupuestaria y prepara una solicitud clara para logistica o administracion.
+    .actions
+      a.btn.btn--ghost(href=obraId ? `/obras/${obraId}` : "/obras") Volver al detalle
 
-    form#formMateriales
-      input(type="hidden" id="obraId" name="obraId" value=obraId)
-
+  .panel
+    .panel__header
       div
-        label(for="partida") Partida presupuestaria:
-        select(id="partida" name="partida")
-          option(value="") Seleccionar
-          option(value="trabajos_preliminares_y_gestion_verde") Trabajos preliminares y gestión verde
-          option(value="infraestructura_y_fundaciones") Infraestructura y fundaciones
-          option(value="envolvente_sustentable") Envolvente sustentable
-          option(value="aberturas_de_alta_prestacion") Aberturas de alta prestación
-          option(value="instalaciones_bio_eficientes") Instalaciones bio-eficientes
-          option(value="revestimientos_y_terminaciones_de_autor") Revestimientos y terminaciones de autor
-          option(value="limpieza_y_entrega") Limpieza y entrega
+        h2.panel__title Partida y materiales
+        p.panel__text Los subitems sugeridos ayudan a ordenar la solicitud segun el rubro elegido.
+      span.tag.tag--ochre Vista preparada
 
-      br
+    .panel__body
+      form#formMateriales.form
+        input(type="hidden" id="obraId" name="obraId" value=obraId)
 
-      h3 Materiales / subítems necesarios
+        .field
+          label(for="partida") Partida presupuestaria
+          select(id="partida" name="partida" required)
+            option(value="") Seleccionar partida
+            if partidas && partidas.length
+              each partida in partidas
+                option(value=partida.rubro data-partida-id=partida.id)= partida.rubro
+            else
+              option(value="trabajos_preliminares_y_gestion_verde") Trabajos preliminares y gestion verde
+              option(value="infraestructura_y_fundaciones") Infraestructura y fundaciones
+              option(value="envolvente_sustentable") Envolvente sustentable
+              option(value="aberturas_de_alta_prestacion") Aberturas de alta prestacion
+              option(value="instalaciones_bio_eficientes") Instalaciones bio-eficientes
+              option(value="revestimientos_y_terminaciones") Revestimientos y terminaciones
+              option(value="limpieza_y_entrega") Limpieza y entrega
 
-      div#subitemsContainer
-        p Seleccione una partida para ver los materiales sugeridos.
+        .panel
+          .panel__header
+            div
+              h2.panel__title Materiales / subitems asociados
+              p.panel__text Marca los materiales requeridos e indica cantidad, unidad y observaciones.
+          .panel__body
+            div#subitemsContainer
+              .empty-state
+                p Selecciona una partida para ver materiales sugeridos.
 
-      br
+        .field
+          label(for="observaciones") Observaciones para logistica
+          textarea(id="observaciones" name="observaciones" rows="4" placeholder="Aclaraciones de entrega, prioridad, proveedor sugerido o restricciones de obra.")
 
-      div
-        label(for="observaciones") Observaciones para logística:
-        br
-        textarea(id="observaciones" name="observaciones" rows="4" cols="50")
+        .form-actions
+          button.btn(type="button" id="guardarSolicitudBtn") Guardar solicitud
+          a.btn.btn--ghost(href=obraId ? `/obras/${obraId}` : "/obras") Cancelar
 
-      br
-      br
+  script.
+    const partidaSelect = document.getElementById('partida');
+    const subitemsContainer = document.getElementById('subitemsContainer');
 
-      button(type="button" id="guardarSolicitudBtn") Guardar solicitud
+    const subitemsPorPartida = {
+      trabajos_preliminares_y_gestion_verde: [
+        'Gestion y permisos',
+        'Estudios tecnicos',
+        'Ingenieria SIP/Steel',
+        'Infraestructura provisoria'
+      ],
+      infraestructura_y_fundaciones: [
+        'Movimiento de suelos',
+        'Hormigon elaborado',
+        'Hierro y armadura',
+        'Barrera de vapor y aislacion',
+        'Mano de obra fundaciones'
+      ],
+      envolvente_sustentable: [
+        'Kit de paneles SIP/Steel',
+        'Fijaciones y conectores',
+        'Kit de hermeticidad',
+        'Estructura de cubierta',
+        'Mano de obra de montaje'
+      ],
+      aberturas_de_alta_prestacion: [
+        'Carpinteria PVC con RPT',
+        'Paquetes de vidrio DVH/TVH',
+        'Puertas tecnicas',
+        'Instalacion y calibracion'
+      ],
+      instalaciones_bio_eficientes: [
+        'Equipos de climatizacion',
+        'Material sanitario y solar',
+        'Material electrico y domotica',
+        'Mano de obra de instalaciones'
+      ],
+      revestimientos_y_terminaciones: [
+        'Revestimientos exteriores',
+        'Terminaciones interiores',
+        'Pinturas y revoques EIFS',
+        'Mano de obra de acabados'
+      ],
+      limpieza_y_entrega: [
+        'Gestion de residuos',
+        'Limpieza de obra'
+      ]
+    };
 
-      br
-      br
+    partidaSelect.addEventListener('change', function () {
+      const partida = this.value;
+      subitemsContainer.innerHTML = '';
 
-      a#volverLink(href=`/obras/${obraId}`) Volver al detalle de la obra
+      if (!partida) {
+        subitemsContainer.innerHTML = '<div class="empty-state"><p>Selecciona una partida para ver materiales sugeridos.</p></div>';
+        return;
+      }
 
-    script.
-      const partidaSelect = document.getElementById('partida');
-      const subitemsContainer = document.getElementById('subitemsContainer');
+      const subitems = subitemsPorPartida[partida] || [];
 
-      const subitemsPorPartida = {
-        trabajos_preliminares_y_gestion_verde: [
-          'Gestión y permisos',
-          'Estudios técnicos',
-          'Ingeniería SIP/Steel',
-          'Infraestructura provisoria'
-        ],
-        infraestructura_y_fundaciones: [
-          'Movimiento de suelos',
-          'Hormigón elaborado',
-          'Hierro y armadura',
-          'Barrera de vapor y aislación',
-          'Mano de obra fundaciones'
-        ],
-        envolvente_sustentable: [
-          'Kit de paneles (SIP/Steel)',
-          'Fijaciones y conectores',
-          'Kit de hermeticidad',
-          'Estructura de cubierta',
-          'Mano de obra de montaje'
-        ],
-        aberturas_de_alta_prestacion: [
-          'Carpintería PVC con RPT',
-          'Paquetes de vidrio (DVH/TVH)',
-          'Puertas técnicas',
-          'Instalación y calibración'
-        ],
-        instalaciones_bio_eficientes: [
-          'Equipos de climatización',
-          'Material sanitario y solar',
-          'Material eléctrico y domótica',
-          'Mano de obra de instalaciones'
-        ],
-        revestimientos_y_terminaciones_de_autor: [
-          'Revestimientos exteriores',
-          'Terminaciones interiores',
-          'Pinturas y revoques EIFS',
-          'Mano de obra de acabados'
-        ],
-        limpieza_y_entrega: [
-          'Gestión de residuos',
-          'Limpieza de obra'
-        ]
-      };
+      if (!subitems.length) {
+        subitemsContainer.innerHTML = '<div class="empty-state"><p>No hay subitems sugeridos para esta partida.</p></div>';
+        return;
+      }
 
-      partidaSelect.addEventListener('change', function () {
-        const partida = this.value;
-        subitemsContainer.innerHTML = '';
-
-        if (!partida) {
-          subitemsContainer.innerHTML = '<p>Seleccioná una partida para ver los materiales sugeridos.</p>';
-          return;
-        }
-
-        const subitems = subitemsPorPartida[partida];
-
-        let html = '<div>';
-        subitems.forEach((subitem, index) => {
-          html += `
-            <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+      let html = '<div class="grid grid--2">';
+      subitems.forEach((subitem, index) => {
+        html += `
+          <div class="material-card">
+            <h4>
               <label>
                 <input type="checkbox" name="subitem_check_${index}" value="${subitem}">
                 ${subitem}
               </label>
-              <br><br>
-
-              <label>Cantidad:</label>
-              <input type="number" name="cantidad_${index}" min="0">
-              <br><br>
-
-              <label>Unidad:</label>
-              <input type="text" name="unidad_${index}" placeholder="Ej: unidades, m2, bolsas">
-              <br><br>
-
-              <label>Observaciones:</label>
-              <input type="text" name="observacion_${index}" placeholder="Detalle opcional">
+            </h4>
+            <div class="form-grid">
+              <div class="field">
+                <label for="cantidad_${index}">Cantidad</label>
+                <input id="cantidad_${index}" type="number" name="cantidad_${index}" min="0" placeholder="0">
+              </div>
+              <div class="field">
+                <label for="unidad_${index}">Unidad</label>
+                <input id="unidad_${index}" type="text" name="unidad_${index}" placeholder="m2, bolsas, unidades">
+              </div>
+              <div class="field field--full">
+                <label for="observacion_${index}">Observaciones</label>
+                <input id="observacion_${index}" type="text" name="observacion_${index}" placeholder="Detalle opcional">
+              </div>
             </div>
-          `;
-        });
-        html += '</div>';
-
-        subitemsContainer.innerHTML = html;
+          </div>
+        `;
       });
+      html += '</div>';
 
-      document.getElementById('guardarSolicitudBtn').addEventListener('click', function () {
-        const partida = partidaSelect.value;
+      subitemsContainer.innerHTML = html;
+    });
 
-        if (!partida) {
-          alert('Por favor seleccioná una partida presupuestaria');
-          return;
-        }
+    document.getElementById('guardarSolicitudBtn').addEventListener('click', function () {
+      const partida = partidaSelect.value;
 
-        alert('Vista de solicitud de materiales preparada. Falta conectar el guardado con el backend.');
-      });
+      if (!partida) {
+        alert('Por favor selecciona una partida presupuestaria');
+        return;
+      }
+
+      alert('Vista de solicitud de materiales preparada. Falta conectar el guardado con el backend.');
+    });

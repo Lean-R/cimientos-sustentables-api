@@ -5,7 +5,11 @@ const GastosController = {
   renderFormNuevo: async (req, res) => {
     try {
       const { obraId } = req.query;
-      res.render("gastos/form", { obraId }); // nombre archivo .pug
+      res.render("gastos/form", {
+        obraId,
+        partidas: [],
+        pageTitle: "Nuevo gasto",
+      }); // nombre archivo .pug
     } catch (error) {
       res.status(500).send("Error al cargar el formulario");
     }
