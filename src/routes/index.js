@@ -3,6 +3,7 @@ import authRouter from "./auth.routes.js";
 import obrasRouter from "./obras.routes.js";
 import gastosRouter from "./gastos.routes.js";
 import partidasPresupuestariasRouter from "./partidas_presupuestarias.routes.js";
+import solicitudMaterialRouter from "./solicitud_material.routes.js";
 
 const router = Router();
 
@@ -17,5 +18,8 @@ router.use("/obras", obrasRouter);
 
 // Rutas para partidas presupuestarias
 router.use("/partidas", partidasPresupuestariasRouter);
+
+// Rutas para solicitud de materiales
+router.use("/materiales", solicitudMaterialRouter);
 
 export default router;

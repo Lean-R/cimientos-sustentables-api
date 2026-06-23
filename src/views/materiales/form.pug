@@ -14,7 +14,7 @@ html
 
       div
         label(for="partida") Partida presupuestaria:
-        select(id="partida" name="partida")
+        select(id="partida" name="partida" required)
           option(value="") Seleccionar
           option(value="trabajos_preliminares_y_gestion_verde") Trabajos preliminares y gestión verde
           option(value="infraestructura_y_fundaciones") Infraestructura y fundaciones
@@ -113,21 +113,21 @@ html
           html += `
             <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
               <label>
-                <input type="checkbox" name="subitem_check_${index}" value="${subitem}">
+                <input type="checkbox" class="subitem-check" value="${subitem}">
                 ${subitem}
               </label>
               <br><br>
 
               <label>Cantidad:</label>
-              <input type="number" name="cantidad_${index}" min="0">
+              <input type="number" class="subitem-cantidad-${index}" min="0" step="any">
               <br><br>
 
               <label>Unidad:</label>
-              <input type="text" name="unidad_${index}" placeholder="Ej: unidades, m2, bolsas">
+              <input type="text" class="subitem-unidad-${index}" placeholder="Ej: unidades, m2, bolsas">
               <br><br>
 
               <label>Observaciones:</label>
-              <input type="text" name="observacion_${index}" placeholder="Detalle opcional">
+              <input type="text" class="subitem-obs-${index}" placeholder="Detalle opcional">
             </div>
           `;
         });
@@ -136,13 +136,65 @@ html
         subitemsContainer.innerHTML = html;
       });
 
-      document.getElementById('guardarSolicitudBtn').addEventListener('click', function () {
+      document.getElementById('guardarSolicitudBtn').addEventListener('click', async function () {
+        const obraId = document.getElementById('obraId').value;
         const partida = partidaSelect.value;
+        const observaciones = document.getElementById('observaciones').value.trim();
 
         if (!partida) {
           alert('Por favor seleccioná una partida presupuestaria');
           return;
         }
 
-        alert('Vista de solicitud de materiales preparada. Falta conectar el guardado con el backend.');
+        // Recolectar subitems checkeados
+        const checkboxes = document.querySelectorAll('.subitem-check:checked');
+        const subitems = [];
+
+        checkboxes.forEach((cb, index) => {
+          // Encontrar el índice real dentro de los checkboxes marcados
+          const allCheckboxes = document.querySelectorAll('.subitem-check');
+          const realIndex = Array.from(allCheckboxes).indexOf(cb);
+
+          const cantidadInput = document.querySelector(`.subitem-cantidad-${realIndex}`);
+          const unidadInput = document.querySelector(`.subitem-unidad-${realIndex}`);
+          const obsInput = document.querySelector(`.subitem-obs-${realIndex}`);
+
+          subitems.push({
+            nombre: cb.value,
+            cantidad: cantidadInput ? parseFloat(cantidadInput.value) || 0 : 0,
+            unidad: unidadInput ? unidadInput.value.trim() : '',
+            observaciones: obsInput ? obsInput.value.trim() : ''
+          });
+        });
+
+        if (subitems.length === 0) {
+          alert('Por favor seleccioná al menos un material');
+          return;
+        }
+
+        const datos = {
+          obra_id: obraId,
+          partida_rubro: partida,
+          subitems,
+          observaciones
+        };
+
+        try {
+          const response = await fetch('/api/materiales', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+          });
+
+          if (response.ok) {
+            alert('¡Solicitud de materiales guardada con éxito!');
+            window.location.href = `/obras/${obraId}`;
+          } else {
+            const err = await response.json();
+            alert('Error: ' + (err.message || 'Error al guardar la solicitud'));
+          }
+        } catch (error) {
+          alert('Error de conexión al guardar la solicitud');
+          console.error('Error:', error);
+        }
       });

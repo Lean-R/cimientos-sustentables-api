@@ -1,0 +1,271 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Cargar partidas presupuestarias
+
+  body
+    h1 Cargar partidas presupuestarias
+    p Completá los items de cada partida para armar el presupuesto de la obra.
+
+    //- Indicador de progreso
+    div#progreso(style="margin-bottom: 20px;")
+      div(style="display: flex; gap: 4px; margin-bottom: 10px;")
+        each paso, index in [1,2,3,4,5,6,7]
+          div(class="paso-indicador" data-paso=index style="flex: 1; padding: 6px; text-align: center; font-size: 0.8em; border-radius: 4px; background: #eee;")
+            = `Paso ${paso}/7`
+
+    //- Contenedor del paso actual
+    div#pasoContainer(style="border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 6px;")
+      h2#rubroTitulo
+      p#rubroDescripcion(style="color: #666;")
+      hr
+      div#itemsContainer
+        p Agregá los items de esta partida.
+      br
+      button(type="button" id="agregarItemBtn") + Agregar item
+
+    //- Navegación
+    div(style="display: flex; justify-content: space-between;")
+      button(type="button" id="anteriorBtn" style="padding: 10px 20px;") ← Anterior
+      button(type="button" id="siguienteBtn" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;") Siguiente →
+
+    br
+    a(href=`/obras/${obraId}`) Volver al detalle de la obra
+
+    //- Datos ocultos
+    input#obraId(type="hidden" value=obraId)
+
+    script.
+      const obraId = document.getElementById('obraId').value;
+
+      // Definición de los 7 rubros
+      const RUBROS = [
+        { id: 'trabajos_preliminares_y_gestion_verde', nombre: 'Trabajos preliminares y gestión verde', descripcion: 'Gestión de permisos, estudios técnicos, ingeniería, infraestructura provisoria.' },
+        { id: 'infraestructura_y_fundaciones', nombre: 'Infraestructura y fundaciones', descripcion: 'Movimiento de suelos, hormigón, hierro, barrera de vapor, mano de obra.' },
+        { id: 'envolvente_sustentable', nombre: 'Envolvente sustentable', descripcion: 'Paneles SIP/Steel, fijaciones, hermeticidad, cubierta, montaje.' },
+        { id: 'aberturas_de_alta_prestacion', nombre: 'Aberturas de alta prestación', descripcion: 'Carpintería PVC con RPT, vidrios DVH/TVH, puertas técnicas, instalación.' },
+        { id: 'instalaciones_bio_eficientes', nombre: 'Instalaciones Bio-eficientes', descripcion: 'Climatización, sanitario y solar, eléctrica y domótica, mano de obra.' },
+        { id: 'revestimientos_y_terminaciones', nombre: 'Revestimientos y Terminaciones', descripcion: 'Revestimientos exteriores, interiores, pinturas, mano de obra de acabados.' },
+        { id: 'limpieza_y_entrega', nombre: 'Limpieza y Entrega', descripcion: 'Gestión de residuos, limpieza final de obra.' }
+      ];
+
+      let pasoActual = 0;
+      let itemCounters = Array(7).fill(0);
+      // Almacena los items de cada paso para que no se pierdan al navegar
+      let itemsPorPaso = Array(7).fill(null).map(() => []);
+
+      // Elementos del DOM
+      const pasoContainer = document.getElementById('pasoContainer');
+      const rubroTitulo = document.getElementById('rubroTitulo');
+      const rubroDescripcion = document.getElementById('rubroDescripcion');
+      const itemsContainer = document.getElementById('itemsContainer');
+      const agregarItemBtn = document.getElementById('agregarItemBtn');
+      const anteriorBtn = document.getElementById('anteriorBtn');
+      const siguienteBtn = document.getElementById('siguienteBtn');
+      const indicadores = document.querySelectorAll('.paso-indicador');
+
+      function actualizarPaso() {
+        const rubro = RUBROS[pasoActual];
+        rubroTitulo.textContent = `Partida ${pasoActual + 1}/7: ${rubro.nombre}`;
+        rubroDescripcion.textContent = rubro.descripcion;
+
+        // Actualizar indicadores
+        indicadores.forEach((el, i) => {
+          if (i < pasoActual) el.style.background = '#8BC34A';
+          else if (i === pasoActual) el.style.background = '#4CAF50';
+          else el.style.background = '#eee';
+        });
+
+        // Botón Anterior
+        anteriorBtn.style.visibility = pasoActual === 0 ? 'hidden' : 'visible';
+
+        // Botón Siguiente
+        if (pasoActual === RUBROS.length - 1) {
+          siguienteBtn.textContent = 'Guardar y finalizar ✓';
+          siguienteBtn.style.background = '#2196F3';
+        } else {
+          siguienteBtn.textContent = 'Siguiente →';
+          siguienteBtn.style.background = '#4CAF50';
+        }
+
+        renderizarItems();
+      }
+
+      function renderizarItems() {
+        const paso = pasoActual;
+        const items = itemsPorPaso[paso];
+        let html = '';
+
+        if (items.length === 0) {
+          html = '<p style="color: #999;">No hay items cargados en esta partida. Hacé click en "+ Agregar item" para empezar.</p>';
+        } else {
+          items.forEach((item, index) => {
+            html += `
+              <div style="padding: 10px; border: 1px solid #ccc; margin-bottom: 10px; border-radius: 4px;">
+                <h4>Item ${index + 1}</h4>
+                <label>Detalle:</label>
+                <input type="text" class="w-detalle" value="${item.detalle}" placeholder="Ej: Albañil" style="width: 100%; margin-bottom: 6px;">
+                <br>
+                <label>Unidad de medida:</label>
+                <input type="text" class="w-unidad" value="${item.unidad_medida}" placeholder="Ej: horas" style="width: 100%; margin-bottom: 6px;">
+                <br>
+                <div style="display: flex; gap: 10px;">
+                  <div style="flex: 1;">
+                    <label>Cantidad:</label>
+                    <input type="number" class="w-cantidad" value="${item.cantidad}" placeholder="Ej: 20" min="1" style="width: 100%;">
+                  </div>
+                  <div style="flex: 1;">
+                    <label>Precio unitario:</label>
+                    <input type="number" class="w-precio" value="${item.precio_unitario}" placeholder="Ej: 2500" min="0.01" step="0.01" style="width: 100%;">
+                  </div>
+                </div>
+                <br>
+                <button type="button" onclick="eliminarItemWizard(${index})" style="color: red;">Eliminar item</button>
+              </div>
+            `;
+          });
+        }
+
+        itemsContainer.innerHTML = html;
+      }
+
+      function guardarItemsActuales() {
+        const paso = pasoActual;
+        const itemDivs = itemsContainer.querySelectorAll('[class^="w-"]');
+        // Recolectar items desde los inputs del DOM
+        const divs = itemsContainer.querySelectorAll('div[style*="padding: 10px; border: 1px solid"]');
+        const items = [];
+
+        divs.forEach(div => {
+          const detalle = div.querySelector('.w-detalle')?.value?.trim();
+          const unidad = div.querySelector('.w-unidad')?.value?.trim();
+          const cantidadInput = div.querySelector('.w-cantidad');
+          const precioInput = div.querySelector('.w-precio');
+          const cantidad = cantidadInput ? parseFloat(cantidadInput.value) : null;
+          const precio = precioInput ? parseFloat(precioInput.value) : null;
+
+          if (detalle && unidad && cantidad && precio) {
+            items.push({
+              detalle,
+              cantidad,
+              unidad_medida: unidad,
+              precio_unitario: precio
+            });
+          }
+        });
+
+        itemsPorPaso[paso] = items;
+      }
+
+      function eliminarItemWizard(index) {
+        guardarItemsActuales();
+        const paso = pasoActual;
+        itemsPorPaso[paso].splice(index, 1);
+        renderizarItems();
+      }
+
+      // Agregar nuevo item al paso actual
+      agregarItemBtn.addEventListener('click', () => {
+        guardarItemsActuales();
+        const paso = pasoActual;
+        itemsPorPaso[paso].push({
+          detalle: '',
+          cantidad: '',
+          unidad_medida: '',
+          precio_unitario: ''
+        });
+        renderizarItems();
+      });
+
+      // Anterior
+      anteriorBtn.addEventListener('click', () => {
+        guardarItemsActuales();
+        if (pasoActual > 0) {
+          pasoActual--;
+          actualizarPaso();
+        }
+      });
+
+      // Siguiente o Guardar
+      siguienteBtn.addEventListener('click', async () => {
+        guardarItemsActuales();
+        const paso = pasoActual;
+        const items = itemsPorPaso[paso];
+
+        if (items.length === 0) {
+          alert(`Por favor agregá al menos un item a la partida "${RUBROS[paso].nombre}"`);
+          return;
+        }
+
+        // Validar que todos los items tengan datos completos
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          if (!item.detalle || !item.cantidad || !item.unidad_medida || !item.precio_unitario) {
+            alert(`El item ${i + 1} de la partida "${RUBROS[paso].nombre}" tiene campos incompletos.`);
+            return;
+          }
+        }
+
+        if (paso === RUBROS.length - 1) {
+          // Último paso: guardar todas las partidas
+          await guardarTodasLasPartidas();
+        } else {
+          // Siguiente paso
+          pasoActual++;
+          actualizarPaso();
+        }
+      });
+
+      async function guardarTodasLasPartidas() {
+        const btn = siguienteBtn;
+        btn.disabled = true;
+        btn.textContent = 'Guardando...';
+
+        let exitos = 0;
+        let errores = 0;
+
+        for (let i = 0; i < RUBROS.length; i++) {
+          const items = itemsPorPaso[i];
+
+          if (items.length === 0) continue; // Saltar partidas sin items
+
+          const datos = {
+            obra_id: obraId,
+            rubro: RUBROS[i].id,
+            items: items
+          };
+
+          try {
+            const response = await fetch('/api/partidas', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(datos)
+            });
+
+            if (response.ok) {
+              exitos++;
+            } else {
+              const err = await response.json();
+              console.error(`Error en partida ${i + 1}:`, err);
+              errores++;
+            }
+          } catch (error) {
+            console.error(`Error al guardar partida ${i + 1}:`, error);
+            errores++;
+          }
+        }
+
+        if (exitos > 0) {
+          alert(`¡Partidas guardadas exitosamente! (${exitos} creadas${errores > 0 ? `, ${errores} con error` : ''})`);
+          window.location.href = `/obras/${obraId}`;
+        } else {
+          alert('Ocurrió un error al guardar las partidas. Revisá la consola para más detalles.');
+          btn.disabled = false;
+          btn.textContent = 'Guardar y finalizar ✓';
+        }
+      }
+
+      // Inicializar primer paso
+      actualizarPaso();

@@ -12,9 +12,9 @@ html
     a(href="/obras/nueva") + Nueva obra
 
     table(border="1")
-      
+
       thead
-        
+
          tr
             th Nombre
             th Dirección
@@ -22,9 +22,8 @@ html
             th Director de obra
             th Tipo de contratación
             th Estado
-            th Presupuesto
             th Acciones
-        
+
       tbody
         each obra in obras
           tr
@@ -34,12 +33,9 @@ html
             td= obra.director
             td= obra.tipo_contratacion
             td= obra.estado
-            td= obra.presupuestoTotal
             td
              a(href=`/obras/${obra.id}`) Ver
-             |  | 
+             |  |
              a(href=`/obras/editar/${obra.id}`) Editar
-             |  | 
+             |  |
              a(href=`/obras/eliminar/${obra.id}`) Eliminar
-        
-        

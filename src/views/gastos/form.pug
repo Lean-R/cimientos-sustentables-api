@@ -11,22 +11,13 @@ html
 
     form#formGasto
       input(type="hidden" id="obra_id" name="obra_id" value=obraId)
-      //- input(type="hidden" id="partida_id" name="partida_id" value=partidaId)
 
       br
 
       div
         label(for="partida_id") Partida Presupuestaria:
         select(id="partida_id" name="partida_id")
-          option(value="") Seleccionar partida
-          //- Aquí simula las partidas fijas (reemplaza los values por IDs reales si ya los tienes, o textos provisionales)
-          option(value="partida_preliminares") Trabajos preliminares y gestión verde
-          option(value="partida_infraestructura") Infraestructura y fundaciones
-          option(value="partida_envolvente") Envolvente sustentable
-          option(value="partida_aberturas") Aberturas de alta prestación
-          option(value="partida_instalaciones") Instalaciones Bio-eficientes
-          option(value="partida_revestimientos") Revestimientos y Terminaciones
-          option(value="partida_limpieza") Limpieza y Entrega
+          option(value="") Cargando partidas...
 
       br
 
@@ -76,5 +67,42 @@ html
         a(href=`/obras/${obraId}`) Volver al detalle de la obra
       else
         a(href="/obras") Volver al listado de obras
-  
-  script(src="/js/gastos.js")    
+
+  script(src="/js/gastos.js")
+  script.
+    // Cargar partidas reales de la obra al iniciar
+    (async function cargarPartidas() {
+      const select = document.getElementById('partida_id');
+      const obraId = document.getElementById('obra_id').value;
+
+      try {
+        const response = await fetch(`/api/partidas?obra_id=${obraId}`);
+        if (!response.ok) throw new Error('Error al cargar partidas');
+
+        const partidas = await response.json();
+
+        if (partidas.length === 0) {
+          select.innerHTML = '<option value="">No hay partidas cargadas</option>';
+          return;
+        }
+
+        const RUBROS_NOMBRES = {
+          trabajos_preliminares_y_gestion_verde: 'Trabajos preliminares y gestión verde',
+          infraestructura_y_fundaciones: 'Infraestructura y fundaciones',
+          envolvente_sustentable: 'Envolvente sustentable',
+          aberturas_de_alta_prestacion: 'Aberturas de alta prestación',
+          instalaciones_bio_eficientes: 'Instalaciones Bio-eficientes',
+          revestimientos_y_terminaciones: 'Revestimientos y Terminaciones',
+          limpieza_y_entrega: 'Limpieza y Entrega'
+        };
+
+        select.innerHTML = '<option value="">Seleccionar partida</option>';
+        partidas.forEach(p => {
+          const label = RUBROS_NOMBRES[p.rubro] || p.rubro;
+          select.innerHTML += `<option value="${p.id}">${label} - $${Number(p.precio_total).toLocaleString()}</option>`;
+        });
+      } catch (error) {
+        console.error('Error al cargar partidas:', error);
+        select.innerHTML = '<option value="">Error al cargar partidas</option>';
+      }
+    })();

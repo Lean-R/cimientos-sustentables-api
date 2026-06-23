@@ -33,11 +33,8 @@ router.get("/obras/nueva", (req, res) => {
 // Guardar obra nueva
 router.post("/obras", async (req, res) => {
   try {
-    if (req.body.presupuestoTotal) {
-      req.body.presupuestoTotal = Number(req.body.presupuestoTotal);
-    }
-    await createObra(req.body);
-    res.redirect("/obras");
+    const nuevaObra = await createObra(req.body);
+    res.redirect(`/obras/${nuevaObra.id}`);
   } catch (error) {
     console.error("Error al crear la obra:", error);
     res.status(500).send("Error interno al crear obra");
@@ -61,9 +58,6 @@ router.get("/obras/editar/:id", async (req, res) => {
 // Guardar obra editada
 router.post("/obras/editar/:id", async (req, res) => {
   try {
-    if (req.body.presupuestoTotal) {
-      req.body.presupuestoTotal = Number(req.body.presupuestoTotal);
-    }
     await updateObra(req.params.id, req.body);
     res.redirect("/obras");
   } catch (error) {
@@ -97,33 +91,41 @@ router.get("/obras/:id", async (req, res) => {
       (p) => String(p.obra_id) === String(obra.id),
     );
 
-    const todosGastos = await GastosService.getAll();
-    const gastosDeLaObra = todosGastos
-      .filter((g) => String(g.obra_id) === String(obra.id))
-      .map((g) => {
-        const partida = todasPartidas.find(
-          (p) => String(p.id) === String(g.partida_id),
-        );
-
-        return {
-          ...g,
-          partidaRubro: partida ? partida.rubro : "Sin partida",
-        };
-      });
+    const tienePartidas = partidasDeLaObra.length > 0;
 
     const totalPartidas = partidasDeLaObra.reduce(
       (acc, partida) => acc + (Number(partida.precio_total) || 0),
       0,
     );
-    const totalGastos = gastosDeLaObra.reduce(
-      (acc, gasto) => acc + (Number(gasto.monto) || 0),
-      0,
-    );
+
+    let gastosDeLaObra = [];
+    let totalGastos = 0;
+
+    if (tienePartidas) {
+      const todosGastos = await GastosService.getAll();
+      gastosDeLaObra = todosGastos
+        .filter((g) => String(g.obra_id) === String(obra.id))
+        .map((g) => {
+          const partida = todasPartidas.find(
+            (p) => String(p.id) === String(g.partida_id),
+          );
+          return {
+            ...g,
+            partidaRubro: partida ? partida.rubro : "Sin partida",
+          };
+        });
+
+      totalGastos = gastosDeLaObra.reduce(
+        (acc, gasto) => acc + (Number(gasto.monto) || 0),
+        0,
+      );
+    }
 
     res.render("obras/detail", {
       obra,
       partidas: partidasDeLaObra,
       gastos: gastosDeLaObra,
+      tienePartidas,
       totalPartidas,
       totalGastos,
     });
@@ -135,13 +137,16 @@ router.get("/obras/:id", async (req, res) => {
 
 // ---------- Rutas para PARTIDAS ----------
 
-// Crear partida
-router.get("/partidas/nueva", (req, res) => {
+// Wizard (asistente): carga secuencial de las 7 partidas
+router.get("/partidas/cargar", (req, res) => {
   const obraId = req.query.obraId;
-  res.render("partidas/form", { obraId, partidaId: null });
+  if (!obraId) {
+    return res.status(400).send("ID de obra requerido");
+  }
+  res.render("partidas/wizard", { obraId });
 });
 
-// Editar partida
+// Editar partida individual
 router.get("/partidas/editar", (req, res) => {
   const obraId = req.query.obraId;
   const partidaId = req.query.partidaId;

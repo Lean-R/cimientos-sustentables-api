@@ -3,10 +3,10 @@ html
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Detalle de obra
+    title= `Detalle de obra - ${obra.nombre}`
 
   body
-    h1 Detalle de obra
+    h1= obra.nombre
 
     h2 Datos generales
 
@@ -38,149 +38,123 @@ html
       strong Estado:
       |  #{obra.estado}
 
+    hr
+
+    h2 Presupuesto
+
+    if tienePartidas
+      p
+        strong Presupuesto total:
+        |  $#{totalPartidas.toLocaleString()}
+
+      h3 Partidas presupuestarias
+      each partida in partidas
+        div(style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd;")
+          p
+            a(href=`/partidas/editar?partidaId=${partida.id}&obraId=${obra.id}`) Editar
+            |  |
+            a(href="#" onclick=`event.preventDefault(); eliminarPartida('${partida.id}')`) Eliminar
+          p
+            strong Rubro:
+            |  #{partida.rubro}
+          p
+            strong Precio total:
+            |  $#{Number(partida.precio_total).toLocaleString()}
+
+          h4 Items:
+          table(border="1" cellpadding="5" cellspacing="0")
+            thead
+              tr
+                th Detalle
+                th Cantidad
+                th Unidad de medida
+                th Precio unitario
+                th Precio parcial
+            tbody
+              each item in partida.items
+                tr
+                  td= item.detalle
+                  td= item.cantidad
+                  td= item.unidad_medida
+                  td $#{Number(item.precio_unitario).toLocaleString()}
+                  td $#{Number(item.precio_parcial).toLocaleString()}
+
+      hr
+
+      h2 Gastos registrados
+
+      if gastos.length > 0
+        table(border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; margin-top: 10px;")
+          thead
+            tr(style="background-color: #f2f2f2; text-align: left;")
+              th Fecha
+              th Partida
+              th Concepto / Detalle
+              th(style="text-align: center;") Cantidad
+              th(style="text-align: center;") Unidad
+              th Monto
+              th Estado
+          tbody
+            each gasto in gastos
+              tr
+                td= gasto.fecha ? new Date(gasto.fecha).toLocaleDateString() : 'S/D'
+                td= gasto.partidaRubro || 'Sin partida'
+                td= gasto.concepto || 'Sin concepto'
+                td(style="text-align: center;")= gasto.cantidad || 'N/A'
+                td(style="text-align: center;")= gasto.unidad || 'N/A'
+                td $#{Number(gasto.monto).toLocaleString()}
+                td
+                  span(style="padding: 2px 6px; border-radius: 4px; background: #eee; font-size: 0.85em;")= gasto.estado || 'Pendiente'
+      else
+        p No hay gastos registrados en esta obra.
+
+      p
+        strong Total gastos registrados:
+        |  $#{totalGastos.toLocaleString()}
+
+      hr
+
+      p
+        a(href=`/gastos/nuevo?obraId=${obra.id}`) + Registrar gasto
+        |  |
+        a(href=`/materiales/nueva-solicitud?obraId=${obra.id}`) + Solicitud de materiales
+
+    else
+      p
+        strong Presupuesto total:
+        |  Pendiente
+
+      p Todavía no se cargaron las partidas presupuestarias.
+
+      p
+        a(href=`/partidas/cargar?obraId=${obra.id}` style="padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 4px; display: inline-block;") + Cargar partidas presupuestarias
+
+    hr
+
     p
-      strong Presupuesto total:
-      |  #{obra.presupuestoTotal}
-
-    h2 Partidas Presupuestarias
-
-    div#partidasContainer
-      p Cargando partidas...
-
-    p
-    a(href=`/partidas/nueva?obraId=${obra.id}`) + Nueva partida
-
-    p
-    a(href=`/api/gastos/nuevo?obraId=${obra.id}`) + Nuevo gasto
+      a(href="/obras") Volver al listado
 
     script.
-      const obraId = '#{obra.id}';
-      
       async function eliminarPartida(partidaId) {
         const confirmar = confirm('¿Estás seguro de que deseás eliminar esta partida presupuestaria?');
-        
+
         if (!confirmar) {
           return;
         }
-        
+
         try {
           const response = await fetch(`/api/partidas/${partidaId}`, {
             method: 'DELETE'
           });
-          
+
           if (!response.ok) {
             throw new Error('Error al eliminar la partida');
           }
-          
+
           alert('¡Partida eliminada correctamente!');
-          // Recargar las partidas
-          cargarPartidas();
+          location.reload();
         } catch (error) {
           alert('Error: ' + error.message);
           console.error('Error:', error);
         }
       }
-      
-      function cargarPartidas() {
-        fetch(`/api/partidas?obra_id=${obraId}`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Error en la respuesta del servidor');
-            }
-            return response.json();
-          })
-          .then(partidas => {
-            const container = document.getElementById('partidasContainer');
-            
-            if (partidas.length === 0) {
-              container.innerHTML = '<p>No hay partidas presupuestarias en esta obra</p>';
-              return;
-            }
-            
-            let html = '';
-            
-            partidas.forEach(partida => {
-              html += `
-                <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd;">
-                  <p>
-                    <a href="/partidas/editar?partidaId=${partida.id}&obraId=${obraId}">Editar</a> | 
-                    <a href="#" onclick="event.preventDefault(); eliminarPartida('${partida.id}');">Eliminar</a>
-                  </p>
-                  <p><strong>ID:</strong> ${partida.id}</p>
-                  <p><strong>Rubro:</strong> ${partida.rubro}</p>
-                  <p><strong>Precio Total:</strong> $${partida.precio_total}</p>
-                  
-                  <h4>Items:</h4>
-                  <table border="1" cellpadding="5" cellspacing="0">
-                    <thead>
-                      <tr>
-                        <th>Detalle</th>
-                        <th>Cantidad</th>
-                        <th>Unidad de Medida</th>
-                        <th>Precio Unitario</th>
-                        <th>Precio Parcial</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-              `;
-              
-              partida.items.forEach(item => {
-                html += `
-                  <tr>
-                    <td>${item.detalle}</td>
-                    <td>${item.cantidad}</td>
-                    <td>${item.unidad_medida}</td>
-                    <td>$${item.precio_unitario}</td>
-                    <td>$${item.precio_parcial}</td>
-                  </tr>
-                `;
-              });
-              
-              html += `
-                    </tbody>
-                  </table>
-                </div>
-              `;
-            });
-            
-            container.innerHTML = html;
-          })
-          .catch(error => {
-            const container = document.getElementById('partidasContainer');
-            container.innerHTML = '<p style="color: red;">No se pudieron cargar las partidas</p>';
-            console.error('Error:', error);
-          });
-      }
-      
-      // Cargar partidas al iniciar la página
-      cargarPartidas();
-
-
-    hr
-
-    h2 Gastos registrados
-
-    div#gastosContainer
-      p Cargando gastos...
-
-    p
-      strong Total gastos registrados: 
-      span#totalGastos $0
-
-    hr  
-
-    p
-        a(href="/obras") Volver al listado
-
-
-  //script 
-  script(src="/js/detailgastos.js")
-  script. 
-    const currenteObraId = '#{obra.id}';
-      document.addEventListener('DOMContentLoaded', () => {
-          cargarGastos(currenteObraId);
-        });
-
- 
-
-   
