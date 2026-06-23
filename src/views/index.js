@@ -156,4 +156,11 @@ router.get("/gastos/nuevo", (req, res) => {
   res.render("gastos/form", { obraId });
 });
 
+// ---------- Rutas para MATERIALES ----------
+router.get("/materiales/nueva-solicitud", (req, res) => {
+  const { obraId } = req.query;
+
+  res.render("materiales/form", { obraId });
+});
+
 export default router;
