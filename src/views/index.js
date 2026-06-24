@@ -2,6 +2,9 @@ import { Router } from "express";
 import ObrasService from "../services/obras-service.js";
 import PartidasPresupuestariasService from "../services/partidas_presupuestarias.service.js";
 import GastosService from "../services/gastos.service.js";
+import authViews from "../middleware/authViews.js";
+import { COOKIE_OPTIONS } from "../helpers/jwt.js";
+import { authenticateUser } from "../services/auth.service.js";
 
 const { getAllObras, getObraByID, createObra, updateObra, deleteObra } =
   ObrasService;
@@ -9,13 +12,51 @@ const { getAllObras, getObraByID, createObra, updateObra, deleteObra } =
 // Router creado para manejar las vistas PUG
 const router = Router();
 
-// Ruta raíz
+// Middleware de autenticación para todas las vistas
+// La raíz (login) está en la whitelist del middleware
+router.use(authViews);
+
+// Ruta raíz (login) — GET renderiza el formulario
 router.get("/", (_, res) => {
   res.render("index", {
     pageTitle: "Iniciar sesion",
     hideShell: true,
     bodyClass: "login-page",
   });
+});
+
+// POST /login — procesa el formulario de inicio de sesión
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  const renderError = (error) => {
+    return res.render("index", {
+      pageTitle: "Iniciar sesion",
+      hideShell: true,
+      bodyClass: "login-page",
+      error,
+    });
+  };
+
+  try {
+    const result = await authenticateUser(username, password);
+
+    if (result.error) {
+      return renderError("Credenciales incorrectas");
+    }
+
+    res.cookie("token", result.token, COOKIE_OPTIONS);
+    res.redirect("/obras");
+  } catch (error) {
+    console.error("Error en login:", error.message);
+    return renderError("Error interno. Intente nuevamente.");
+  }
+});
+
+// Ruta de logout
+router.get("/logout", (_, res) => {
+  res.clearCookie("token", COOKIE_OPTIONS);
+  res.redirect("/");
 });
 
 // ---------- Rutas para OBRAS ----------

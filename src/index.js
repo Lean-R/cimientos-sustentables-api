@@ -4,6 +4,7 @@ import views from "./views/index.js";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 import seedAdmin from "./helpers/seedAdmin.js";
 
 // Configurar __dirname para ESM
@@ -12,6 +13,7 @@ const __dirname = dirname(__filename);
 
 const PORT = process.env.PORT || 3001;
 const MONGO_URI = process.env.MONGO_URI;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Inicializar express
 const app = express();
@@ -20,6 +22,13 @@ const app = express();
 if (!MONGO_URI) {
   console.error(
     "MONGO_URI no definido. Verifique las variables de entorno (.env)",
+  );
+  process.exit(1);
+}
+
+if (!JWT_SECRET) {
+  console.error(
+    "JWT_SECRET no definido. Verifique las variables de entorno (.env)",
   );
   process.exit(1);
 }
@@ -39,6 +48,8 @@ await seedAdmin();
 app.use(express.json());
 // Middleware para parsear datos de formularios
 app.use(express.urlencoded({ extended: true }));
+// Middleware para leer cookies
+app.use(cookieParser());
 // Funciones javascript para servir archivos estáticos (CSS, JS, imágenes):
 app.use(express.static(join(__dirname, "public")));
 
