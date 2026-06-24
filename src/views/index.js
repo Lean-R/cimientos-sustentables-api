@@ -10,7 +10,7 @@ const { getAllObras, getObraByID, createObra, updateObra, deleteObra } =
 const router = Router();
 
 // Ruta raíz
-router.get("/", (req, res) => {
+router.get("/", (_, res) => {
   res.render("index", {
     pageTitle: "Iniciar sesion",
     hideShell: true,
@@ -19,7 +19,7 @@ router.get("/", (req, res) => {
 });
 
 // ---------- Rutas para OBRAS ----------
-router.get("/obras", async (req, res) => {
+router.get("/obras", async (_, res) => {
   try {
     const obras = await getAllObras();
     res.render("obras/index", { obras, pageTitle: "Listado de obras" });
@@ -30,7 +30,7 @@ router.get("/obras", async (req, res) => {
 });
 
 // Crear obra
-router.get("/obras/nueva", (req, res) => {
+router.get("/obras/nueva", (_, res) => {
   res.render("obras/form", { pageTitle: "Nueva obra" });
 });
 

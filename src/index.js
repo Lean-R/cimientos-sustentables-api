@@ -4,6 +4,7 @@ import views from "./views/index.js";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
+import seedAdmin from "./helpers/seedAdmin.js";
 
 // Configurar __dirname para ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -30,6 +31,9 @@ try {
   console.error("❌ Error conectando a la DB:", error.message);
   process.exit(1);
 }
+
+// Verificar/crear usuario admin por defecto
+await seedAdmin();
 
 // Middleware para parsear JSON
 app.use(express.json());
