@@ -500,9 +500,11 @@ textarea {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 18px;
   padding: 42px;
   background: linear-gradient(145deg, #ede0c8, #dfe8d6);
+  text-align: center;
 }
 
 .login-card__logo {
@@ -510,10 +512,25 @@ textarea {
   height: auto;
 }
 
-.login-card__brand h1 {
+.login-card__copy {
+  display: grid;
+  justify-items: center;
+}
+
+.login-card__copy .page-kicker {
+  text-align: center;
+}
+
+.login-card__brand h1,
+.login-title {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.1rem);
+  font-size: clamp(2.4rem, 5vw, 4rem);
   line-height: 1.05;
+  text-align: center;
+}
+
+.login-title span {
+  display: block;
 }
 
 .login-card__brand p {
@@ -550,6 +567,92 @@ textarea {
   margin: 0;
 }
 
+.wizard-progress {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.wizard-step {
+  display: grid;
+  gap: 3px;
+  min-height: 62px;
+  align-content: center;
+  justify-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: #f3ecdd;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.wizard-step span {
+  width: 26px;
+  height: 26px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-primary-dark);
+  font-weight: 800;
+}
+
+.wizard-step small {
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.wizard-step.is-active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.wizard-step.is-active span {
+  background: #fff;
+}
+
+.wizard-step.is-complete {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  border-color: #c7d5bd;
+}
+
+.wizard-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.wizard-panel__head {
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: #f7f1e5;
+}
+
+.wizard-panel__head h2,
+.wizard-panel__head p {
+  margin: 0;
+}
+
+.wizard-panel__head p {
+  margin-top: 6px;
+  color: var(--color-muted);
+}
+
+.wizard-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 @media (max-width: 820px) {
   .app-header__inner {
     align-items: flex-start;
@@ -576,8 +679,13 @@ textarea {
   .grid--3,
   .form-grid,
   .detail-list,
+  .wizard-progress,
   .login-card {
     grid-template-columns: 1fr;
+  }
+
+  .wizard-actions {
+    flex-direction: column;
   }
 }
 

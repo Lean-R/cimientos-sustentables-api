@@ -1,21 +1,17 @@
 extends layout
 
 block content
-  - var pageTitle = "Iniciar sesion"
-  - var hideShell = true
-  - var bodyClass = "login-page"
-
   .login-card
     section.login-card__brand
       img.login-card__logo(src="/logo-cimientos.png" alt="Logo Cimientos Sustentables e Hijos SA")
-      div
-        p.page-kicker Sistema administrativo
-        h1 Gestion de obras sustentables
-      p Control de obras, partidas presupuestarias, solicitudes de materiales y gastos desde una interfaz clara para el equipo de obra.
+      .login-card__copy
+        h1.login-title
+          span Gestión de
+          span obras
 
     section.login-card__form
-      h2 Iniciar sesion
-      p Acceso interno para administracion y direccion de obra.
+      h2 Inicio de sesión
+      p Acceso interno para administración y dirección de obra.
 
       form#loginForm.form
         .field
@@ -23,7 +19,7 @@ block content
           input#username(type="text" name="username" autocomplete="username" required)
 
         .field
-          label(for="password") Contrasena
+          label(for="password") Contraseña
           input#password(type="password" name="password" autocomplete="current-password" required)
 
         .form-actions

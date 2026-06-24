@@ -11,14 +11,18 @@ const router = Router();
 
 // Ruta raíz
 router.get("/", (req, res) => {
-  res.render("index");
+  res.render("index", {
+    pageTitle: "Iniciar sesion",
+    hideShell: true,
+    bodyClass: "login-page",
+  });
 });
 
 // ---------- Rutas para OBRAS ----------
 router.get("/obras", async (req, res) => {
   try {
     const obras = await getAllObras();
-    res.render("obras/index", { obras });
+    res.render("obras/index", { obras, pageTitle: "Listado de obras" });
   } catch (error) {
     console.error("Error al renderizar obras:", error);
     res.status(500).send("Error interno al cargar obras");
@@ -27,7 +31,7 @@ router.get("/obras", async (req, res) => {
 
 // Crear obra
 router.get("/obras/nueva", (req, res) => {
-  res.render("obras/form");
+  res.render("obras/form", { pageTitle: "Nueva obra" });
 });
 
 // Guardar obra nueva
@@ -48,7 +52,7 @@ router.get("/obras/editar/:id", async (req, res) => {
     if (!obra) {
       return res.status(404).send("Obra no encontrada");
     }
-    res.render("obras/form", { obra });
+    res.render("obras/form", { obra, pageTitle: "Editar obra" });
   } catch (error) {
     console.error("Error al obtener la obra para editar:", error);
     res.status(500).send("Error interno del servidor");
@@ -128,6 +132,7 @@ router.get("/obras/:id", async (req, res) => {
       tienePartidas,
       totalPartidas,
       totalGastos,
+      pageTitle: `Detalle de obra - ${obra.nombre}`,
     });
   } catch (error) {
     console.error("Error al obtener detalles de la obra:", error);
@@ -143,14 +148,21 @@ router.get("/partidas/cargar", (req, res) => {
   if (!obraId) {
     return res.status(400).send("ID de obra requerido");
   }
-  res.render("partidas/wizard", { obraId });
+  res.render("partidas/wizard", {
+    obraId,
+    pageTitle: "Cargar partidas presupuestarias",
+  });
 });
 
 // Editar partida individual
 router.get("/partidas/editar", (req, res) => {
   const obraId = req.query.obraId;
   const partidaId = req.query.partidaId;
-  res.render("partidas/form", { obraId, partidaId });
+  res.render("partidas/form", {
+    obraId,
+    partidaId,
+    pageTitle: "Editar partida presupuestaria",
+  });
 });
 
 // ---------- Rutas para GASTOS ----------
@@ -158,14 +170,17 @@ router.get("/partidas/editar", (req, res) => {
 // Crear gasto
 router.get("/gastos/nuevo", (req, res) => {
   const obraId = req.query.obraId;
-  res.render("gastos/form", { obraId });
+  res.render("gastos/form", { obraId, pageTitle: "Nuevo gasto" });
 });
 
 // ---------- Rutas para MATERIALES ----------
 router.get("/materiales/nueva-solicitud", (req, res) => {
   const { obraId } = req.query;
 
-  res.render("materiales/form", { obraId });
+  res.render("materiales/form", {
+    obraId,
+    pageTitle: "Solicitud de materiales",
+  });
 });
 
 export default router;

@@ -1,200 +1,237 @@
-doctype html
-html
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Solicitud de materiales
+extends ../layout
 
-  body
-    h1#titulo Solicitud de materiales
-    p#descripcion Complete los materiales necesarios para la obra.
+block content
+  .page-head
+    div
+      p.page-kicker Solicitud de materiales
+      h1.page-title Nueva solicitud
+      p.page-lead Seleccione una partida de la obra y prepare el pedido de materiales para logística.
 
-    form#formMateriales
-      input(type="hidden" id="obraId" name="obraId" value=obraId)
-
+  .panel
+    .panel__header
       div
-        label(for="partida") Partida presupuestaria:
-        select(id="partida" name="partida" required)
-          option(value="") Seleccionar
-          option(value="trabajos_preliminares_y_gestion_verde") Trabajos preliminares y gestión verde
-          option(value="infraestructura_y_fundaciones") Infraestructura y fundaciones
-          option(value="envolvente_sustentable") Envolvente sustentable
-          option(value="aberturas_de_alta_prestacion") Aberturas de alta prestación
-          option(value="instalaciones_bio_eficientes") Instalaciones bio-eficientes
-          option(value="revestimientos_y_terminaciones_de_autor") Revestimientos y terminaciones de autor
-          option(value="limpieza_y_entrega") Limpieza y entrega
+        h2.panel__title Partida y materiales
+        p.panel__text Los materiales sugeridos se organizan por rubro presupuestario.
+      span.tag.tag--ochre Director de obra
 
-      br
+    .panel__body
+      form#formMateriales.form
+        input(type="hidden" id="obraId" name="obraId" value=obraId)
 
-      h3 Materiales / subítems necesarios
+        .field
+          label(for="partida") Partida presupuestaria
+          select(id="partida" name="partida" required)
+            option(value="") Cargando partidas...
+          small Solo se puede solicitar materiales sobre partidas cargadas en la obra.
 
-      div#subitemsContainer
-        p Seleccione una partida para ver los materiales sugeridos.
+        .panel
+          .panel__header
+            div
+              h2.panel__title Materiales / subítems necesarios
+              p.panel__text Marque los materiales requeridos e indique cantidades.
+          .panel__body
+            div#subitemsContainer
+              .empty-state
+                p Seleccione una partida para ver los materiales sugeridos.
 
-      br
+        .field
+          label(for="observaciones") Observaciones para logística
+          textarea(id="observaciones" name="observaciones" rows="4" placeholder="Prioridad, proveedor sugerido, condiciones de entrega o aclaraciones.")
 
-      div
-        label(for="observaciones") Observaciones para logística:
-        br
-        textarea(id="observaciones" name="observaciones" rows="4" cols="50")
+        .form-actions
+          button.btn(type="button" id="guardarSolicitudBtn") Guardar solicitud
+          a.btn.btn--ghost(href=obraId ? `/obras/${obraId}` : "/obras") Volver al detalle
 
-      br
-      br
+  script.
+    const partidaSelect = document.getElementById('partida');
+    const subitemsContainer = document.getElementById('subitemsContainer');
 
-      button(type="button" id="guardarSolicitudBtn") Guardar solicitud
+    const RUBROS_NOMBRES = {
+      trabajos_preliminares_y_gestion_verde: 'Trabajos preliminares y gestión verde',
+      infraestructura_y_fundaciones: 'Infraestructura y fundaciones',
+      envolvente_sustentable: 'Envolvente sustentable',
+      aberturas_de_alta_prestacion: 'Aberturas de alta prestación',
+      instalaciones_bio_eficientes: 'Instalaciones bio-eficientes',
+      revestimientos_y_terminaciones: 'Revestimientos y terminaciones',
+      limpieza_y_entrega: 'Limpieza y entrega'
+    };
 
-      br
-      br
+    const subitemsPorPartida = {
+      trabajos_preliminares_y_gestion_verde: [
+        'Gestión y permisos',
+        'Estudios técnicos',
+        'Ingeniería SIP/Steel',
+        'Infraestructura provisoria'
+      ],
+      infraestructura_y_fundaciones: [
+        'Movimiento de suelos',
+        'Hormigón elaborado',
+        'Hierro y armadura',
+        'Barrera de vapor y aislación',
+        'Mano de obra fundaciones'
+      ],
+      envolvente_sustentable: [
+        'Kit de paneles SIP/Steel',
+        'Fijaciones y conectores',
+        'Kit de hermeticidad',
+        'Estructura de cubierta',
+        'Mano de obra de montaje'
+      ],
+      aberturas_de_alta_prestacion: [
+        'Carpinteria PVC con RPT',
+        'Paquetes de vidrio DVH/TVH',
+        'Puertas técnicas',
+        'Instalación y calibración'
+      ],
+      instalaciones_bio_eficientes: [
+        'Equipos de climatización',
+        'Material sanitario y solar',
+        'Material eléctrico y domótica',
+        'Mano de obra de instalaciones'
+      ],
+      revestimientos_y_terminaciones: [
+        'Revestimientos exteriores',
+        'Terminaciones interiores',
+        'Pinturas y revoques EIFS',
+        'Mano de obra de acabados'
+      ],
+      limpieza_y_entrega: [
+        'Gestión de residuos',
+        'Limpieza de obra'
+      ]
+    };
 
-      a#volverLink(href=`/obras/${obraId}`) Volver al detalle de la obra
+    async function cargarPartidasMateriales() {
+      const obraId = document.getElementById('obraId').value;
 
-    script.
-      const partidaSelect = document.getElementById('partida');
-      const subitemsContainer = document.getElementById('subitemsContainer');
+      try {
+        const response = await fetch(`/api/partidas?obra_id=${obraId}`);
+        if (!response.ok) throw new Error('Error al cargar partidas');
 
-      const subitemsPorPartida = {
-        trabajos_preliminares_y_gestion_verde: [
-          'Gestión y permisos',
-          'Estudios técnicos',
-          'Ingeniería SIP/Steel',
-          'Infraestructura provisoria'
-        ],
-        infraestructura_y_fundaciones: [
-          'Movimiento de suelos',
-          'Hormigón elaborado',
-          'Hierro y armadura',
-          'Barrera de vapor y aislación',
-          'Mano de obra fundaciones'
-        ],
-        envolvente_sustentable: [
-          'Kit de paneles (SIP/Steel)',
-          'Fijaciones y conectores',
-          'Kit de hermeticidad',
-          'Estructura de cubierta',
-          'Mano de obra de montaje'
-        ],
-        aberturas_de_alta_prestacion: [
-          'Carpintería PVC con RPT',
-          'Paquetes de vidrio (DVH/TVH)',
-          'Puertas técnicas',
-          'Instalación y calibración'
-        ],
-        instalaciones_bio_eficientes: [
-          'Equipos de climatización',
-          'Material sanitario y solar',
-          'Material eléctrico y domótica',
-          'Mano de obra de instalaciones'
-        ],
-        revestimientos_y_terminaciones_de_autor: [
-          'Revestimientos exteriores',
-          'Terminaciones interiores',
-          'Pinturas y revoques EIFS',
-          'Mano de obra de acabados'
-        ],
-        limpieza_y_entrega: [
-          'Gestión de residuos',
-          'Limpieza de obra'
-        ]
-      };
+        const partidas = await response.json();
 
-      partidaSelect.addEventListener('change', function () {
-        const partida = this.value;
-        subitemsContainer.innerHTML = '';
-
-        if (!partida) {
-          subitemsContainer.innerHTML = '<p>Seleccioná una partida para ver los materiales sugeridos.</p>';
+        if (!partidas.length) {
+          partidaSelect.innerHTML = '<option value="">No hay partidas cargadas</option>';
           return;
         }
 
-        const subitems = subitemsPorPartida[partida];
+        partidaSelect.innerHTML = '<option value="">Seleccionar partida</option>';
+        partidas.forEach((partida) => {
+          partidaSelect.innerHTML += `<option value="${partida.rubro}">${RUBROS_NOMBRES[partida.rubro] || partida.rubro}</option>`;
+        });
+      } catch (error) {
+        console.error('Error al cargar partidas:', error);
+        partidaSelect.innerHTML = '<option value="">Error al cargar partidas</option>';
+      }
+    }
 
-        let html = '<div>';
-        subitems.forEach((subitem, index) => {
-          html += `
-            <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+    partidaSelect.addEventListener('change', function () {
+      const partida = this.value;
+      subitemsContainer.innerHTML = '';
+
+      if (!partida) {
+        subitemsContainer.innerHTML = '<div class="empty-state"><p>Seleccione una partida para ver los materiales sugeridos.</p></div>';
+        return;
+      }
+
+      const subitems = subitemsPorPartida[partida] || [];
+
+      if (!subitems.length) {
+        subitemsContainer.innerHTML = '<div class="empty-state"><p>No hay subítems sugeridos para esta partida.</p></div>';
+        return;
+      }
+
+      let html = '<div class="grid grid--2">';
+      subitems.forEach((subitem, index) => {
+        html += `
+          <div class="material-card">
+            <h4>
               <label>
                 <input type="checkbox" class="subitem-check" value="${subitem}">
                 ${subitem}
               </label>
-              <br><br>
-
-              <label>Cantidad:</label>
-              <input type="number" class="subitem-cantidad-${index}" min="0" step="any">
-              <br><br>
-
-              <label>Unidad:</label>
-              <input type="text" class="subitem-unidad-${index}" placeholder="Ej: unidades, m2, bolsas">
-              <br><br>
-
-              <label>Observaciones:</label>
-              <input type="text" class="subitem-obs-${index}" placeholder="Detalle opcional">
+            </h4>
+            <div class="form-grid">
+              <div class="field">
+                <label for="cantidad_${index}">Cantidad</label>
+                <input id="cantidad_${index}" type="number" class="subitem-cantidad-${index}" min="0" step="any" placeholder="0">
+              </div>
+              <div class="field">
+                <label for="unidad_${index}">Unidad</label>
+                <input id="unidad_${index}" type="text" class="subitem-unidad-${index}" placeholder="m2, bolsas, unidades">
+              </div>
+              <div class="field field--full">
+                <label for="observacion_${index}">Observaciones</label>
+                <input id="observacion_${index}" type="text" class="subitem-obs-${index}" placeholder="Detalle opcional">
+              </div>
             </div>
-          `;
-        });
-        html += '</div>';
+          </div>
+        `;
+      });
+      html += '</div>';
 
-        subitemsContainer.innerHTML = html;
+      subitemsContainer.innerHTML = html;
+    });
+
+    document.getElementById('guardarSolicitudBtn').addEventListener('click', async function () {
+      const obraId = document.getElementById('obraId').value;
+      const partida = partidaSelect.value;
+      const observaciones = document.getElementById('observaciones').value.trim();
+
+      if (!partida) {
+        alert('Por favor, seleccione una partida presupuestaria');
+        return;
+      }
+
+      const checkboxes = document.querySelectorAll('.subitem-check:checked');
+      const subitems = [];
+
+      checkboxes.forEach((cb) => {
+        const allCheckboxes = document.querySelectorAll('.subitem-check');
+        const realIndex = Array.from(allCheckboxes).indexOf(cb);
+
+        const cantidadInput = document.querySelector(`.subitem-cantidad-${realIndex}`);
+        const unidadInput = document.querySelector(`.subitem-unidad-${realIndex}`);
+        const obsInput = document.querySelector(`.subitem-obs-${realIndex}`);
+
+        subitems.push({
+          nombre: cb.value,
+          cantidad: cantidadInput ? parseFloat(cantidadInput.value) || 0 : 0,
+          unidad: unidadInput ? unidadInput.value.trim() : '',
+          observaciones: obsInput ? obsInput.value.trim() : ''
+        });
       });
 
-      document.getElementById('guardarSolicitudBtn').addEventListener('click', async function () {
-        const obraId = document.getElementById('obraId').value;
-        const partida = partidaSelect.value;
-        const observaciones = document.getElementById('observaciones').value.trim();
+      if (subitems.length === 0) {
+        alert('Por favor, seleccione al menos un material');
+        return;
+      }
 
-        if (!partida) {
-          alert('Por favor seleccioná una partida presupuestaria');
-          return;
-        }
+      const datos = {
+        obra_id: obraId,
+        partida_rubro: partida,
+        subitems,
+        observaciones
+      };
 
-        // Recolectar subitems checkeados
-        const checkboxes = document.querySelectorAll('.subitem-check:checked');
-        const subitems = [];
-
-        checkboxes.forEach((cb, index) => {
-          // Encontrar el índice real dentro de los checkboxes marcados
-          const allCheckboxes = document.querySelectorAll('.subitem-check');
-          const realIndex = Array.from(allCheckboxes).indexOf(cb);
-
-          const cantidadInput = document.querySelector(`.subitem-cantidad-${realIndex}`);
-          const unidadInput = document.querySelector(`.subitem-unidad-${realIndex}`);
-          const obsInput = document.querySelector(`.subitem-obs-${realIndex}`);
-
-          subitems.push({
-            nombre: cb.value,
-            cantidad: cantidadInput ? parseFloat(cantidadInput.value) || 0 : 0,
-            unidad: unidadInput ? unidadInput.value.trim() : '',
-            observaciones: obsInput ? obsInput.value.trim() : ''
-          });
+      try {
+        const response = await fetch('/api/materiales', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos)
         });
 
-        if (subitems.length === 0) {
-          alert('Por favor seleccioná al menos un material');
-          return;
+        if (response.ok) {
+          alert('Solicitud de materiales guardada correctamente');
+          window.location.href = `/obras/${obraId}`;
+        } else {
+          const err = await response.json();
+          alert('Error: ' + (err.message || 'Error al guardar la solicitud'));
         }
+      } catch (error) {
+        alert('Error de conexion al guardar la solicitud');
+        console.error('Error:', error);
+      }
+    });
 
-        const datos = {
-          obra_id: obraId,
-          partida_rubro: partida,
-          subitems,
-          observaciones
-        };
-
-        try {
-          const response = await fetch('/api/materiales', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datos)
-          });
-
-          if (response.ok) {
-            alert('¡Solicitud de materiales guardada con éxito!');
-            window.location.href = `/obras/${obraId}`;
-          } else {
-            const err = await response.json();
-            alert('Error: ' + (err.message || 'Error al guardar la solicitud'));
-          }
-        } catch (error) {
-          alert('Error de conexión al guardar la solicitud');
-          console.error('Error:', error);
-        }
-      });
+    cargarPartidasMateriales();

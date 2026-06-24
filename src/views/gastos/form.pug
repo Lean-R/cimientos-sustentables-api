@@ -1,76 +1,66 @@
-doctype html
-html
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Nuevo gasto
+extends ../layout
 
-  body
-    h1#titulo Nuevo gasto
-    p#descripcion Completá los datos para registrar un gasto.
+block content
+  .page-head
+    div
+      p.page-kicker Registro de gasto
+      h1.page-title Registrar gasto
+      p.page-lead Registre un gasto asociado a una partida real de la obra.
 
-    form#formGasto
-      input(type="hidden" id="obra_id" name="obra_id" value=obraId)
-
-      br
-
+  .panel
+    .panel__header
       div
-        label(for="partida_id") Partida Presupuestaria:
-        select(id="partida_id" name="partida_id")
-          option(value="") Cargando partidas...
+        h2.panel__title Datos del gasto
+        p.panel__text Seleccione la partida y complete el detalle administrativo del gasto.
+      span.tag Pendiente por defecto
 
-      br
+    .panel__body
+      form#formGasto.form
+        input(type="hidden" id="obra_id" name="obra_id" value=obraId)
 
-      div
-        label(for="fecha") Fecha:
-        input(type="date" id="fecha" name="fecha" value=(new Date().toISOString().split('T')[0]))
+        .form-grid
+          .field.field--full
+            label(for="partida_id") Partida presupuestaria
+            select(id="partida_id" name="partida_id" required)
+              option(value="") Cargando partidas...
+            small El listado se carga desde las partidas reales de esta obra.
 
-      br
+          .field
+            label(for="fecha") Fecha
+            input(type="date" id="fecha" name="fecha" value=(new Date().toISOString().split("T")[0]))
 
-      div
-        label(for="concepto") Concepto / Detalle corto:
-        input(type="text" id="concepto" name="concepto" placeholder="Ej: Compra de tirantes de madera certificada")
+          .field
+            label(for="concepto") Concepto / detalle corto
+            input(type="text" id="concepto" name="concepto" placeholder="Ej: Compra de tirantes de madera certificada" required)
 
-      br
+          .field
+            label(for="cantidad") Cantidad
+            input(type="number" id="cantidad" name="cantidad" step="1" min="1" required)
 
-      div
-        label(for="cantidad") Cantidad:
-        input(type="number" id="cantidad" name="cantidad" step="1" min="1")
+          .field
+            label(for="unidad") Unidad de medida
+            select(id="unidad" name="unidad" required)
+              option(value="") Seleccionar unidad
+              option(value="unidades") Unidades
+              option(value="litros") Litros (L)
+              option(value="kilos") Kilos (Kg)
+              option(value="metros") Metros (m)
+              option(value="m2") Metros cuadrados (m2)
+              option(value="m3") Metros cubicos (m3)
 
-      br
+          .field
+            label(for="monto") Monto estimado
+            input(type="number" id="monto" name="monto" step="0.01" min="0.01" placeholder="Ej: 125000" required)
 
-      div
-        label(for="unidad") Unidad de medida:
-        select(id="unidad" name="unidad")
-          option(value="") Seleccionar unidad
-          option(value="unidades") Unidades
-          option(value="litros") Litros(L)
-          option(value="kilos") Kilos(Kg)
-          option(value="metros") Metros(m)
-          option(value="m2") Metros cuadrados(m²)
-          option(value="m3") Metros cúbicos(m³)
-
-      br
-
-      div
-        label(for="monto") Monto Estimado:
-        input(type="number" id="monto" name="monto" step="0.01" min="0.01" placeholder="(Estimado)")
-
-      br
-
-      button(type="submit" id="guardarGasto") Guardar gasto
-
-      br
-      br
-
-      if obraId
-        a(href=`/obras/${obraId}`) Volver al detalle de la obra
-      else
-        a(href="/obras") Volver al listado de obras
+        .form-actions
+          button.btn(type="submit" id="guardarGasto") Guardar gasto
+          if obraId
+            a.btn.btn--ghost(href=`/obras/${obraId}`) Volver al detalle
+          else
+            a.btn.btn--ghost(href="/obras") Volver al listado
 
   script(src="/js/gastos.js")
   script.
-    // Cargar partidas reales de la obra al iniciar
     (async function cargarPartidas() {
       const select = document.getElementById('partida_id');
       const obraId = document.getElementById('obra_id').value;
@@ -91,15 +81,15 @@ html
           infraestructura_y_fundaciones: 'Infraestructura y fundaciones',
           envolvente_sustentable: 'Envolvente sustentable',
           aberturas_de_alta_prestacion: 'Aberturas de alta prestación',
-          instalaciones_bio_eficientes: 'Instalaciones Bio-eficientes',
-          revestimientos_y_terminaciones: 'Revestimientos y Terminaciones',
-          limpieza_y_entrega: 'Limpieza y Entrega'
+          instalaciones_bio_eficientes: 'Instalaciones bio-eficientes',
+          revestimientos_y_terminaciones: 'Revestimientos y terminaciones',
+          limpieza_y_entrega: 'Limpieza y entrega'
         };
 
         select.innerHTML = '<option value="">Seleccionar partida</option>';
         partidas.forEach(p => {
           const label = RUBROS_NOMBRES[p.rubro] || p.rubro;
-          select.innerHTML += `<option value="${p.id}">${label} - $${Number(p.precio_total).toLocaleString()}</option>`;
+          select.innerHTML += `<option value="${p.id}">${label} - $${Number(p.precio_total).toLocaleString('es-AR')}</option>`;
         });
       } catch (error) {
         console.error('Error al cargar partidas:', error);

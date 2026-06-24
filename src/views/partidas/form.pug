@@ -5,15 +5,13 @@ block content
     div
       p.page-kicker Presupuesto de obra
       h1.page-title#titulo Nueva partida presupuestaria
-      p.page-lead#descripcion Carga rubros e items para construir el presupuesto calculado de la obra.
-    .actions
-      a.btn.btn--ghost#volverTopLink(href=obraId ? `/obras/${obraId}` : "/obras") Volver
+      p.page-lead#descripcion Cargue rubros e ítems para construir el presupuesto calculado de la obra.
 
   .panel
     .panel__header
       div
         h2.panel__title Datos de la partida
-        p.panel__text Cada partida agrupa items con cantidad, unidad y precio unitario.
+        p.panel__text Cada partida agrupa ítems con cantidad, unidad y precio unitario.
       span.tag.tag--ochre Etapa clave
 
     .panel__body
@@ -28,7 +26,7 @@ block content
             option(value="trabajos_preliminares_y_gestion_verde") Trabajos preliminares y gestion verde
             option(value="infraestructura_y_fundaciones") Infraestructura y fundaciones
             option(value="envolvente_sustentable") Envolvente sustentable
-            option(value="aberturas_de_alta_prestacion") Aberturas de alta prestacion
+            option(value="aberturas_de_alta_prestacion") Aberturas de alta prestación
             option(value="instalaciones_bio_eficientes") Instalaciones bio-eficientes
             option(value="revestimientos_y_terminaciones") Revestimientos y terminaciones
             option(value="limpieza_y_entrega") Limpieza y entrega
@@ -36,17 +34,17 @@ block content
         .panel
           .panel__header
             div
-              h2.panel__title Items de la partida
-              p.panel__text Agrega los trabajos, materiales o servicios que componen el rubro.
-            button.btn.btn--secondary(type="button" id="agregarItemBtn") + Agregar item
+              h2.panel__title Ítems de la partida
+              p.panel__text Agregue los trabajos, materiales o servicios que componen el rubro.
+            button.btn.btn--secondary(type="button" id="agregarItemBtn") + Agregar ítem
           .panel__body
             .item-list#itemsContainer
             .empty-state#emptyItems
-              p Todavia no agregaste items. Usa el boton "Agregar item" para comenzar.
+              p Todavia no agregó ítems. Use el boton "Agregar ítem" para comenzar.
 
         .form-actions
           button.btn(type="button" id="guardarPartidaBtn") Guardar partida
-          a.btn.btn--ghost#volverLink(href=obraId ? `/obras/${obraId}` : "/obras") Volver al detalle de la obra
+          a.btn.btn--ghost#volverLink(href=obraId ? `/obras/${obraId}` : "/obras") Volver al detalle
 
   script.
     let itemCount = 0;
@@ -115,7 +113,6 @@ block content
 
         document.getElementById('rubro').value = partida.rubro;
         document.getElementById('volverLink').href = `/obras/${partida.obra_id}`;
-        document.getElementById('volverTopLink').href = `/obras/${partida.obra_id}`;
 
         partida.items.forEach((item) => agregarItem(item));
       } catch (error) {
@@ -127,7 +124,7 @@ block content
     if (partidaId) {
       modoEdicion = true;
       document.getElementById('titulo').textContent = 'Editar partida presupuestaria';
-      document.getElementById('descripcion').textContent = 'Actualiza el rubro y sus items presupuestarios.';
+      document.getElementById('descripcion').textContent = 'Actualice el rubro y sus items presupuestarios.';
       document.getElementById('guardarPartidaBtn').textContent = 'Actualizar partida';
       cargarPartidaParaEditar();
     }
@@ -145,7 +142,7 @@ block content
       const itemsDivs = document.querySelectorAll('[id^="item-"]');
 
       if (itemsDivs.length === 0) {
-        alert('Es necesario agregar al menos un item');
+        alert('Es necesario agregar al menos un ítem');
         return;
       }
 
@@ -158,7 +155,7 @@ block content
         const precio_unitario = parseFloat(div.querySelector('.precio_unitario').value);
 
         if (!detalle || !cantidad || !unidad_medida || !precio_unitario) {
-          alert('Todos los campos de los items son requeridos');
+          alert('Todos los campos de los ítems son requeridos');
           return;
         }
 
@@ -180,7 +177,7 @@ block content
 
         if (!response.ok) {
           const error = await response.json();
-          throw new Error(error.message || 'Error en la operacion');
+          throw new Error(error.message || 'Error en la operación');
         }
 
         alert(modoEdicion ? 'Partida presupuestaria actualizada correctamente' : 'Partida presupuestaria creada correctamente');
