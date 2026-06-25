@@ -19,3 +19,76 @@ html(lang="es")
 
     main(class=hideShell ? "login-main" : "app-main")
       block content
+    //- INTEGRAMOS UN CHAT INTERNO CON SOCKET.IO
+    if !hideShell
+      //- Botón flotante
+      button#btnAbrirChat(type="button" onclick="toggleChat(true)") Chat Obra
+
+      //- Estructura del Modal flotante
+      #modalChat.modal-chat
+        .modal-content
+          .modal-header
+            h3 Chat Interno
+            button.btn-close(type="button" onclick="toggleChat(false)") ✖
+          .modal-body
+            ul#mensajes
+          .modal-footer
+            input(type="text" id="mensaje" placeholder="Escriba un mensaje..." onkeypress="manejarEnter(event)")
+            button(type="button" onclick="enviar()") Enviar
+
+      //- Scripts de Socket.io y lógica de control
+      script(src="/socket.io/socket.io.js")
+      script.
+        const socket = (typeof io !== 'undefined') ? io() : null;
+
+        if (!socket) {
+          console.warn("⚠️ Socket.io no disponible en este entorno.");
+        }
+
+        function toggleChat(mostrar) {
+          const modal = document.getElementById("modalChat");
+          const boton = document.getElementById("btnAbrirChat");
+          if (!modal) return;
+          
+          if (mostrar) {
+            modal.style.display = "block";
+            boton.style.display = "none";
+          } else {
+            modal.style.display = "none";
+            boton.style.display = "block";
+          }
+        }
+
+        function enviar() {
+          if (!socket) return;
+          const input = document.getElementById("mensaje");
+          const texto = input.value.trim();
+          if (!texto) return;
+
+          socket.emit("mensaje", {
+            // Mandamos el nombre del usuario desde el servidor, o un valor por defecto
+            usuario: "#{usuario ? usuario.nombre : 'Anónimo'}", 
+            texto: texto
+          });
+          input.value = "";
+        }
+
+        function manejarEnter(e) {
+          if (e.key === "Enter") {
+            enviar();
+          }
+        }
+
+        if (socket) {
+          socket.on("mensaje", (datos) => {
+            const lista = document.getElementById("mensajes");
+            if (!lista) return;
+            const li = document.createElement("li");
+            li.innerHTML = `<strong style="color: var(--color-primary-dark);">${datos.usuario}:</strong> ${datos.texto}`;
+            lista.appendChild(li);
+            
+            // Auto-scroll hacia abajo al recibir un mensaje
+            const body = document.querySelector(".modal-body");
+            if (body) body.scrollTop = body.scrollHeight;
+          });
+        }
