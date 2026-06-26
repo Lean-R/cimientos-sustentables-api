@@ -6,7 +6,7 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
-import seedAdmin from "./helpers/seedAdmin.js";
+import { seedDefaultUsers } from "./helpers/seedDefaultUsers.js";
 
 // crear un servidor HTTP y un servidor de WebSocket con Socket.IO
 import { createServer } from "http";
@@ -51,7 +51,7 @@ try {
 }
 
 // Verificar/crear usuario admin por defecto
-await seedAdmin();
+await seedDefaultUsers();
 
 // Middleware para parsear JSON
 app.use(express.json());
@@ -76,25 +76,23 @@ app.use("/api", routes);
 io.on("connection", (socket) => {
   console.log("⚡ Un usuario se ha conectado al chat de la obra");
 
-// Escuchamos cuando alguien envía un mensaje desde el modal flotante
-socket.on("mensaje", (datos) => {
-  console.log("📥 Mensaje recibido en servidor:", datos);
-  
-  // Lo retransmitimos en milisegundos a todos los usuarios conectados
-  io.emit("mensaje", datos);
-});
+  // Escuchamos cuando alguien envía un mensaje desde el modal flotante
+  socket.on("mensaje", (datos) => {
+    console.log("📥 Mensaje recibido en servidor:", datos);
 
-socket.on("disconnect", () => {
-  console.log("❌ Un usuario se desconectó");
-});
+    // Lo retransmitimos en milisegundos a todos los usuarios conectados
+    io.emit("mensaje", datos);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("❌ Un usuario se desconectó");
+  });
 });
 
 // Ponemos a escuchar al httpServer, NO a la app directamente
 httpServer.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
-
-
 
 // // Ejecutar servidor en puerto definido
 // app.listen(PORT, () => {
