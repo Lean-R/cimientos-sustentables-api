@@ -22,7 +22,13 @@ const authViews = (req, res, next) => {
     return res.redirect("/");
   }
 
+  console.log("DATOS REALES DEL TOKEN:", payload);
+
+  res.locals.usuario = payload;
+
+
   req.user = payload;
+
   next();
 };
 

@@ -39,7 +39,7 @@ html(lang="es")
       //- Scripts de Socket.io y lógica de control
       script(src="/socket.io/socket.io.js")
       script.
-        const socket = (typeof io !== 'undefined') ? io() : null;
+        const socket = (typeof io !== 'undefined') ? io({ transports: ['websocket', 'polling'] }) : null;
 
         if (!socket) {
           console.warn("⚠️ Socket.io no disponible en este entorno.");
@@ -67,7 +67,7 @@ html(lang="es")
 
           socket.emit("mensaje", {
             // Mandamos el nombre del usuario desde el servidor, o un valor por defecto
-            usuario: "#{usuario ? usuario.nombre : 'Anónimo'}", 
+            usuario: "#{usuario ? usuario.username : 'Anónimo'}", 
             texto: texto
           });
           input.value = "";
