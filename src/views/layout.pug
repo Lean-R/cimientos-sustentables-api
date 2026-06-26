@@ -13,7 +13,7 @@ html(lang="es")
             img.brand__logo(src="/logo-cimientos.png" alt="Cimientos Sustentables e Hijos SA")
             .brand__text
               strong Cimientos Sustentables e Hijos
-              span Sistema de gestión de obras
+              span Sistema de gestión de obras - USUARIO: #{usuario ? usuario.username : 'Anónimo'}
           nav.app-nav(aria-label="Navegacion principal")
             a.app-nav__link(href="/logout") Cerrar sesión
 
@@ -83,8 +83,19 @@ html(lang="es")
           socket.on("mensaje", (datos) => {
             const lista = document.getElementById("mensajes");
             if (!lista) return;
+
+            const miUsername = "#{usuario ? usuario.username : ''}";
+
             const li = document.createElement("li");
-            li.innerHTML = `<strong style="color: var(--color-primary-dark);">${datos.usuario}:</strong> ${datos.texto}`;
+
+           if (datos.usuario === miUsername) {
+              li.className = "msg-propio";
+              li.innerHTML = `<strong>Tú:</strong> ${datos.texto}`;
+            } else {
+              li.className = "msg-ajeno";
+              li.innerHTML = `<strong style="color: var(--color-primary-dark);">${datos.usuario}:</strong> ${datos.texto}`;
+            }
+            
             lista.appendChild(li);
             
             // Auto-scroll hacia abajo al recibir un mensaje
